@@ -90,16 +90,23 @@ class Game:
            
     def events(self):
         #Eventos do loop
-        eventos = pygame.event.get()
-        for eventos in eventos:
-            if eventos.type == pygame.QUIT:
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
                 if self.playing:
                     self.playing = False
-            self.running = False
+                    self.running = False
 
-            if eventos.type == pygame.KEYDOWN:
-                if eventos.key == pygame.K_SPACE:
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_SPACE:
                     self.player.jump()
+                
+                if (evento.key == pygame.K_ESCAPE):
+                    if self.playing:
+                    self.playing = False
+                    self.running = False
+                    
+            
+           
                                          
     def draw(self):
         #Desenha as imagens
@@ -127,15 +134,17 @@ class Game:
         waiting = True
         while waiting:
             self.clock.tick(FPS)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+            for evento in pygame.event.get():
+                if evento.type == pygame.QUIT:
+
                     waiting = False
                     self.running = False
                 
-                if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_RETURN):
+                if (evento.type == pygame.KEYDOWN) and (evento.key == pygame.K_RETURN):
                     waiting = False
+                    self.running = True
                 
-                if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_ESCAPE):
+                if (evento.type == pygame.KEYDOWN) and (evento.key == pygame.K_ESCAPE):
                     waiting = False
                     self.running = False
                 
