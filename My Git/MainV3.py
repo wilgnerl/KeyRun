@@ -114,8 +114,8 @@ class Game:
         
         self.tela.fill(BLUE)
         self.draw_text(TITLE, 48, WHITE, LARGURA/2, ALTURA/4)
-        self.draw_text("Start", 22, WHITE, LARGURA/2, ALTURA/2)
-        self.draw_text("Quit", 22, WHITE, LARGURA/2, 500)
+        self.draw_text("Press Start", 30, WHITE, LARGURA/2, ALTURA/2)
+        self.draw_text("Quit [Esc]", 30, WHITE, LARGURA/2, 400)
         pygame.display.flip()
         self.wait_for_key()
         
@@ -132,8 +132,13 @@ class Game:
                     waiting = False
                     self.running = False
                 
-                if event.type == pygame.KEYUP:
+                if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_RETURN):
                     waiting = False
+                
+                if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_ESCAPE):
+                    waiting = False
+                    self.running = False
+                
            
     def draw_text(self, text, size, color, x, y):
         font = pygame.font.Font(self.font_name, size)
