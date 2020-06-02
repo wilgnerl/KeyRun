@@ -102,8 +102,8 @@ class Game:
                 
                 if (evento.key == pygame.K_ESCAPE):
                     if self.playing:
-                    self.playing = False
-                    self.running = False
+                        self.playing = False
+                        self.running = False
                     
             
            
