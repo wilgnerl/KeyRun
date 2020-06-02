@@ -217,10 +217,10 @@ class Enemy(pygame.sprite.Sprite):
         
         self.rect.midbottom =  self.pos
         
-        if self.pos.x >= 1000:
+        '''if self.pos.x >= 1000:
             self.pos.x = 1000
         if self.pos.x < 0:
-            self.pos.x = 0
+            self.pos.x = 0'''
 
     def animate(self):
         

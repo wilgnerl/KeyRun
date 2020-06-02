@@ -71,10 +71,13 @@ class Game:
                 self.player.pos.y = hits[0].rect.top 
                 self.player.vel.y = 0 
                 
-        if self.player.rect.right > LARGURA/2:
+        if self.player.rect.right >= LARGURA/2:
             self.player.pos.x -= abs(self.player.vel.x)
             for plat in self.platforms:
                 plat.rect.x -= abs(self.player.vel.x)
+            
+            for enemy in self.enemys:
+                enemy.pos.x -= abs(self.player.vel.x + 0.5*self.player.acc.x)
         
         for enemy in self.enemys:        
             if enemy.vel.y > 0:
@@ -83,10 +86,13 @@ class Game:
                     enemy.pos.y = hits[0].rect.top
                     enemy.vel.y = 0
         
-        '''if self.player.rect.right < LARGURA/2:         
+        if self.player.rect.right < LARGURA/2:         
             self.player.pos.x += abs(self.player.vel.x)
             for plat in self.platforms:
-                plat.rect.x += abs(self.player.vel.x)'''
+                plat.rect.x += abs(self.player.vel.x)
+
+            for enemy in self.enemys:
+                enemy.pos.x += abs(self.player.vel.x + 0.5*self.player.acc.x)
            
     def events(self):
         #Eventos do loop
