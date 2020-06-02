@@ -74,7 +74,7 @@ class Game:
         if self.player.rect.right >= LARGURA/2:
             self.player.pos.x -= abs(self.player.vel.x)
             for plat in self.platforms:
-                plat.rect.x -= abs(self.player.vel.x)
+                plat.rect.x -= abs(self.player.vel.x + 0.5*self.player.acc.x)
             
             for enemy in self.enemys:
                 enemy.pos.x -= abs(self.player.vel.x + 0.5*self.player.acc.x)
@@ -89,7 +89,7 @@ class Game:
         if self.player.rect.right < LARGURA/2:         
             self.player.pos.x += abs(self.player.vel.x)
             for plat in self.platforms:
-                plat.rect.x += abs(self.player.vel.x)
+                plat.rect.x += abs(self.player.vel.x + 0.5*self.player.acc.x)
 
             for enemy in self.enemys:
                 enemy.pos.x += abs(self.player.vel.x + 0.5*self.player.acc.x)

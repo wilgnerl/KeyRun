@@ -132,12 +132,12 @@ class Player(pygame.sprite.Sprite):
         self.vel += self.acc
         self.pos += self.vel + 0.5 * self.acc
         
-        self.rect.midbottom =  self.pos
+        self.rect.midbottom = self.pos
         
-        if self.pos.x >= 1000:
+        '''if self.pos.x >= 1000:
             self.pos.x = 1000
         if self.pos.x < 0:
-            self.pos.x = 0
+            self.pos.x = 0'''
               
 class Platforms(pygame.sprite.Sprite):
     def __init__(self,x):
