@@ -19,6 +19,10 @@ FIGHTING = 3
 SWIMMING = 4
 FALLING = 2
 
+#Tela
+TITLE = 'Bem vindo'
+FONT_NAME = 'Courier'
+
 #Cores para ser utilizada
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
