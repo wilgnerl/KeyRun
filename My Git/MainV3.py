@@ -1,5 +1,5 @@
 import pygame
-import random
+import random, math
 from Configurações import *
 from spritesv2 import *
 
@@ -16,11 +16,14 @@ class Game:
         self.running = True
         self.font_name = pygame.font.match_font(FONT_NAME)
         self.load_data()
+        self.end_time = 0
+        self.bool_contato = False
     
     def load_data(self):
         self.dir = os.path.dirname(__file__)
         img_dir = os.path.join(self.dir, 'Tiles')
-        self.spritesheet_enemy = Spritesheet(os.path.join(img_dir,SPRITESHEET_ENEMY))
+        self.spritesheet_enemy = Spritesheet(os.path.join(img_dir, SPRITESHEET_ENEMY))
+        self.spritesheet_keys = Spritesheet(os.path.join(img_dir, SPRITESHEE_KEYS))
     
     def new(self):
         #Inicia o jogo
@@ -29,6 +32,7 @@ class Game:
         self.enemys = pygame.sprite.Group()
         self.player = Player(self)
         self.todas_sprites.add(self.player)
+        self.grupo_setas = pygame.sprite.Group()
         
         for i in range(0,5000, TILE_SIZE):
             p1 = Platforms(i)
@@ -45,7 +49,7 @@ class Game:
             self.platforms.add(p1)
             self.todas_sprites.add(p1)
             
-        self.e = Enemy(self, 350, ALTURA - 40, 200)
+        self.e = Enemy(self, 500, ALTURA - 40, 200)
         self.todas_sprites.add(self.e)
         self.enemys.add(self.e)
 
@@ -63,6 +67,7 @@ class Game:
              self.draw()
     
     def update(self):
+        global FPS
         #Atualiza o loop
         self.todas_sprites.update()
         if self.player.vel.y > 0:
@@ -93,7 +98,26 @@ class Game:
 
             for enemy in self.enemys:
                 enemy.pos.x += abs(self.player.vel.x + 0.5*self.player.acc.x)
-           
+
+
+        for enemy in self.enemys:
+            if self.distancia(self.player, enemy) < 150 and not self.bool_contato:
+                FPS = 20
+                self.bool_contato = True
+                self.end_time = pygame.time.get_ticks() + 3000
+                for i in range(50,350,100):
+                    seta = Setas(self, i)
+                    self.grupo_setas.add(seta)
+                    self.todas_sprites.add(seta)
+
+        self.current_time = pygame.time.get_ticks()
+        if self.end_time < self.current_time:
+            FPS = 60
+            self.bool_contato = False
+            for seta in self.grupo_setas:
+                self.grupo_setas.remove()
+                self.todas_sprites.remove(seta)
+                
     def events(self):
         #Eventos do loop
         for evento in pygame.event.get():
@@ -111,9 +135,7 @@ class Game:
                         self.playing = False
                         self.running = False
                     
-            
-           
-                                         
+                            
     def draw(self):
         #Desenha as imagens
         self.tela.fill(GREEN2)
@@ -161,11 +183,19 @@ class Game:
         text_rect = text_surface.get_rect()
         text_rect.midtop = (x, y)
         self.tela.blit(text_surface, text_rect)
-                
+
+    def distancia(self, obj1, obj2):
+        self.dif_x = math.fabs(obj1.pos.x) - math.fabs(obj2.pos.x)
+        self.dif_y = math.fabs(obj1.pos.y) - math.fabs(obj2.pos.y)
+        self.pit = math.sqrt(self.dif_x**2 + self.dif_y**2)
+        return self.pit
+
+
 g = Game()
 g.show_start_screen()
 
 while g.running:
+
     g.new()
     g.show_go_screen()
     

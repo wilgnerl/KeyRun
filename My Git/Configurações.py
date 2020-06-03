@@ -1,10 +1,11 @@
 TITULO = 'Pygame'
 LARGURA = 800
 ALTURA = 600
-TILE_SIZE = 40
+TILE_SIZE = 70
 FPS = 60
 
 SPRITESHEET_ENEMY = 'Enemy.png'
+SPRITESHEE_KEYS = 'Keys.png'
 
 #Jogador
 PLAYER_ACC = 0.5

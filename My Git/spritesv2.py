@@ -1,5 +1,6 @@
 import pygame
 import os
+import random
 from Configurações import *
 vec = pygame.math.Vector2
 
@@ -191,7 +192,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.pos = vec(ALTURA/2, LARGURA/2)
+        self.pos = vec(x, y)
         self.vel = vec(0,0)
         self.acc = vec(0,0)
         self.end = x + distance
@@ -275,4 +276,38 @@ class Enemy(pygame.sprite.Sprite):
 
         for frame in self.walk_frames_l:
             self.walk_frames_r.append(pygame.transform.flip(frame, True, False))
+
+
+
+
+class Setas(pygame.sprite.Sprite):
+
+    def __init__(self, game, x):
+        pygame.sprite.Sprite.__init__(self)
+        self.game = game
+        self.load_images()
+        self.lista_opcoes =  ['cima', 'baixo', 'direita', 'esquerda']
+        self.sentido = random.choice(self.lista_opcoes)
+        if self.sentido == 'cima':
+            self.image = self.seta_cima
+        elif self.sentido == 'baixo':
+            self.image = self.seta_baixo
+        elif self.sentido == 'direita':
+            self.image = self.seta_direita
+        else:
+            self.image = self.seta_esquerda
+
+        self.image.set_colorkey(BLACK)
+        self.rect = self.image.get_rect()
+        self.rect.y = 50
+        self.rect.x = x
+        self.pos = (self.rect.x, self.rect.y)
+
+    def load_images(self):
+        
+        self.seta_cima = self.game.spritesheet_keys.get_image(32,0,32,32)
+        self.seta_baixo = self.game.spritesheet_keys.get_image(32,32,32,32)
+        self.seta_direita = self.game.spritesheet_keys.get_image(64,32,32,32)
+        self.seta_esquerda = self.game.spritesheet_keys.get_image(0,32,32,32)
+        
 
