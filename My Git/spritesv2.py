@@ -117,11 +117,11 @@ class Player(pygame.sprite.Sprite):
         self.acc = vec(0,GRAVIDADE)
         self.vy = 0
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
+        if keys[pygame.K_a]:
             self.acc.x = -PLAYER_ACC
             self.state = WALKING
             
-        if keys[pygame.K_RIGHT]:
+        if keys[pygame.K_d]:
             self.acc.x = PLAYER_ACC
             self.state = WALKING
         
@@ -307,7 +307,16 @@ class Setas(pygame.sprite.Sprite):
         
         self.seta_cima = self.game.spritesheet_keys.get_image(32,0,32,32)
         self.seta_baixo = self.game.spritesheet_keys.get_image(32,32,32,32)
-        self.seta_direita = self.game.spritesheet_keys.get_image(64,32,32,32)
         self.seta_esquerda = self.game.spritesheet_keys.get_image(0,32,32,32)
-        
+        self.seta_direita_acerto = self.game.spritesheet_keys.get_image(64,32,32,32)
+
+        self.seta_cima_erro = self.game.spritesheet_keys.get_image(0,64,32,32)
+        self.seta_baixo_erro = self.game.spritesheet_keys.get_image(64,64,32,32)
+        self.seta_esquerda_erro = self.game.spritesheet_keys.get_image(0,0,32,32)
+        self.seta_direita_erro = self.game.spritesheet_keys.get_image(64,0,32,32)
+
+        self.seta_cima_acerto = self.game.spritesheet_keys.get_image(32,128,32,32)
+        self.seta_cima_acerto = self.game.spritesheet_keys.get_image(32,160,32,32)
+        self.seta_esquerda_acerto = self.game.spritesheet_keys.get_image(0,160,32,32)
+        self.seta_direita_acerto = self.game.spritesheet_keys.get_image(64,160,32,32)
 
