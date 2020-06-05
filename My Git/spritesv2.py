@@ -1,6 +1,7 @@
 import pygame
 import os
 import random
+import time
 from Configurações import *
 vec = pygame.math.Vector2
 
@@ -282,7 +283,7 @@ class Enemy(pygame.sprite.Sprite):
 
 class Setas(pygame.sprite.Sprite):
 
-    def __init__(self, game, x):
+    def __init__(self, game, x, cod):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
         self.load_images()
@@ -302,13 +303,18 @@ class Setas(pygame.sprite.Sprite):
         self.rect.y = 50
         self.rect.x = x
         self.pos = (self.rect.x, self.rect.y)
+        self.cod = cod
+
+
+    def retorno(self):
+        return self.sentido
 
     def load_images(self):
         
         self.seta_cima = self.game.spritesheet_keys.get_image(32,0,32,32)
         self.seta_baixo = self.game.spritesheet_keys.get_image(32,32,32,32)
         self.seta_esquerda = self.game.spritesheet_keys.get_image(0,32,32,32)
-        self.seta_direita_acerto = self.game.spritesheet_keys.get_image(64,32,32,32)
+        self.seta_direita = self.game.spritesheet_keys.get_image(64,32,32,32)
 
         self.seta_cima_erro = self.game.spritesheet_keys.get_image(0,64,32,32)
         self.seta_baixo_erro = self.game.spritesheet_keys.get_image(64,64,32,32)
@@ -316,7 +322,50 @@ class Setas(pygame.sprite.Sprite):
         self.seta_direita_erro = self.game.spritesheet_keys.get_image(64,0,32,32)
 
         self.seta_cima_acerto = self.game.spritesheet_keys.get_image(32,128,32,32)
-        self.seta_cima_acerto = self.game.spritesheet_keys.get_image(32,160,32,32)
+        self.seta_baixo_acerto = self.game.spritesheet_keys.get_image(32,160,32,32)
         self.seta_esquerda_acerto = self.game.spritesheet_keys.get_image(0,160,32,32)
         self.seta_direita_acerto = self.game.spritesheet_keys.get_image(64,160,32,32)
 
+    def img_acerto(self):
+
+        if self.sentido == 'cima':
+            self.image = self.seta_cima_acerto
+        elif self.sentido == 'baixo':
+            self.image = self.seta_baixo_acerto
+        elif self.sentido == 'direita':
+            self.image = self.seta_direita_acerto
+        else:
+            self.image = self.seta_esquerda_acerto
+
+    def img_erro(self):
+
+        if self.sentido == 'cima':
+            self.image = self.seta_cima_erro
+        elif self.sentido == 'baixo':
+            self.image = self.seta_baixo_erro
+        elif self.sentido == 'direita':
+            self.image = self.seta_direita_erro
+        else:
+            self.image = self.seta_esquerda_erro
+
+    def acerto(self):
+        self.game.grupo_setas.remove(self)
+        self.game.todas_sprites.remove(self)
+        self.img_acerto()
+        self.game.grupo_setas_certo.add(self)
+        self.game.todas_sprites.add(self)
+        self.game.pos_seta += 1
+
+    def erro(self):
+        self.game.grupo_setas.remove(self)
+        self.game.todas_sprites.remove(self)
+        self.img_erro()
+        self.game.todas_sprites.add(self)
+        self.game.grupo_setas_errado.add(self)
+        self.game.pos_seta += 1
+
+
+class Coracao(pygame.sprite.Sprite):
+
+    def __init__(self, game, x, cod):
+        pass

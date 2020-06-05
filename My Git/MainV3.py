@@ -33,7 +33,9 @@ class Game:
         self.player = Player(self)
         self.todas_sprites.add(self.player)
         self.grupo_setas = pygame.sprite.Group()
-        
+        self.grupo_setas_certo = pygame.sprite.Group()
+        self.grupo_setas_errado = pygame.sprite.Group()
+
         for i in range(0,5000, TILE_SIZE):
             p1 = Platforms(i)
             self.platforms.add(p1)
@@ -99,23 +101,34 @@ class Game:
             for enemy in self.enemys:
                 enemy.pos.x += abs(self.player.vel.x + 0.5*self.player.acc.x)
 
-
         for enemy in self.enemys:
             if self.distancia(self.player, enemy) < 150 and not self.bool_contato:
                 FPS = 20
                 self.bool_contato = True
                 self.end_time = pygame.time.get_ticks() + 3000
-                for i in range(50,350,100):
-                    seta = Setas(self, i)
+                self.lista_setas_tela = []
+                self.pos_seta = 0
+                self.var_seta = 0
+                for i in range(50,550,100):
+                    seta = Setas(self, i, self.var_seta)
+                    self.lista_setas_tela.append(seta.retorno())
                     self.grupo_setas.add(seta)
                     self.todas_sprites.add(seta)
+                    self.var_seta += 1
+                    #print(self.lista_setas_tela)
 
         self.current_time = pygame.time.get_ticks()
         if self.end_time < self.current_time:
             FPS = 60
             self.bool_contato = False
             for seta in self.grupo_setas:
-                self.grupo_setas.remove()
+                self.grupo_setas.remove(seta)
+                self.todas_sprites.remove(seta)
+            for seta in self.grupo_setas_certo:
+                self.grupo_setas_certo.remove(seta)
+                self.todas_sprites.remove(seta)
+            for seta in self.grupo_setas_errado:
+                self.grupo_setas_errado.remove(seta)
                 self.todas_sprites.remove(seta)
                 
     def events(self):
@@ -134,8 +147,47 @@ class Game:
                     if self.playing:
                         self.playing = False
                         self.running = False
-                    
-                            
+
+                if evento.key == pygame.K_UP:
+                    for seta in self.grupo_setas:
+                        if seta.cod == self.pos_seta:
+                            if seta.sentido == 'cima':
+                                seta.acerto()
+                                break
+                            else:
+                                seta.erro()
+                                break
+
+                if evento.key == pygame.K_DOWN:
+                    for seta in self.grupo_setas:
+                        if seta.cod == self.pos_seta:
+                            if seta.sentido == 'baixo':
+                                seta.acerto()
+                                break
+                            else:
+                                seta.erro()
+                                break
+
+                if evento.key == pygame.K_RIGHT:
+                    for seta in self.grupo_setas:
+                        if seta.cod == self.pos_seta:
+                            if seta.sentido == 'direita':
+                                seta.acerto()
+                                break
+                            else:
+                                seta.erro()
+                                break
+
+                if evento.key == pygame.K_LEFT:
+                    for seta in self.grupo_setas:
+                        if seta.cod == self.pos_seta:
+                            if seta.sentido == 'esquerda':
+                                seta.acerto()
+                                break
+                            else:
+                                seta.erro()
+                                break
+
     def draw(self):
         #Desenha as imagens
         self.tela.fill(GREEN2)
@@ -189,7 +241,6 @@ class Game:
         self.dif_y = math.fabs(obj1.pos.y) - math.fabs(obj2.pos.y)
         self.pit = math.sqrt(self.dif_x**2 + self.dif_y**2)
         return self.pit
-
 
 g = Game()
 g.show_start_screen()

@@ -7,14 +7,17 @@
       <spr name="key_Baixo" x="32" y="32" w="32" h="32"/>
       <spr name="key_Esq" x="0" y="32" w="32" h="32"/>
       <spr name="key_Dir" x="64" y="32" w="32" h="32"/>
+
       <spr name="key_Cima_Erro" x="0" y="64" w="32" h="32"/>
       <spr name="key_Baixo_Erro" x="64" y="64" w="32" h="32"/>
       <spr name="key_Esq_Erro" x="0" y="0" w="32" h="32"/>
       <spr name="key_Dir_Erro" x="64" y="0" w="32" h="32"/>
+
       <spr name="key_Cima_Certo" x="32" y="128" w="32" h="32"/>
       <spr name="key_Baixo_Certo" x="32" y="160" w="32" h="32"/>
       <spr name="key_Esq_Certo" x="0" y="160" w="32" h="32"/>
       <spr name="key_Dir_Certo" x="64" y="160" w="32" h="32"/>
+      
       <spr name="key_W" x="32" y="64" w="32" h="32"/>
       <spr name="key_S" x="32" y="96" w="32" h="32"/>
       <spr name="key_A" x="0" y="96" w="32" h="32"/>

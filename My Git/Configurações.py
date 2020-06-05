@@ -3,6 +3,7 @@ LARGURA = 800
 ALTURA = 600
 TILE_SIZE = 70
 FPS = 60
+DIFICULDADE = 'facil'
 
 SPRITESHEET_ENEMY = 'Enemy.png'
 SPRITESHEE_KEYS = 'Keys.png'
@@ -11,6 +12,7 @@ SPRITESHEE_KEYS = 'Keys.png'
 PLAYER_ACC = 0.5
 PLAYER_FRICTION = -0.12
 GRAVIDADE = 0.8
+VIDAS = 3
 
 # Define estados possíveis do jogador
 STILL = 0
