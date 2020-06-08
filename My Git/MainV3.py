@@ -24,7 +24,8 @@ class Game:
         img_dir = os.path.join(self.dir, 'Tiles')
         self.spritesheet_enemy = Spritesheet(os.path.join(img_dir, SPRITESHEET_ENEMY))
         self.spritesheet_keys = Spritesheet(os.path.join(img_dir, SPRITESHEE_KEYS))
-    
+        self.image_heart = pygame.image.load(os.path.join(img_dir, HEART_PNG)).convert_alpha()
+
     def new(self):
         #Inicia o jogo
         self.todas_sprites = pygame.sprite.Group()
@@ -34,6 +35,7 @@ class Game:
         self.grupo_setas_certo = pygame.sprite.Group()
         self.grupo_setas_errado = pygame.sprite.Group()
         self.background = pygame.sprite.Group()
+        self.grupo_coracoes = pygame.sprite.Group()
 
         assets = load_assets(imagem1)
         
@@ -50,9 +52,16 @@ class Game:
                     self.platforms.add(tile)
                     self.todas_sprites.add(tile)
 
+        for vida in range(VIDAS):
+            x_pos = [1180, 1250, 1320]
+            self.coracao = Coracao(self, x_pos[vida], vida)
+            self.todas_sprites.add(self.coracao)
+            self.grupo_coracoes.add(self.coracao)
+            
+
         self.player = Player(self)
         self.todas_sprites.add(self.player) 
-        self.e = Enemy(self, 600, ALTURA - 40, 200)
+        self.e = Enemy(self, 1300, ALTURA - 40, 200)
         self.todas_sprites.add(self.e)
         self.enemys.add(self.e)
 
@@ -70,7 +79,7 @@ class Game:
              self.draw()
     
     def update(self):
-        global FPS
+        #global FPS
         #Atualiza o loop
         self.todas_sprites.update()
         if self.player.vel.y > 0:
@@ -93,14 +102,13 @@ class Game:
                 self.end_time = pygame.time.get_ticks() + 3000
                 self.lista_setas_tela = []
                 self.pos_seta = 0
-                self.var_seta = 0
+                self.cod_seta = 0
                 for i in range(50,550,100):
-                    seta = Setas(self, i, self.var_seta)
+                    seta = Setas(self, i, self.cod_seta)
                     self.lista_setas_tela.append(seta.retorno())
                     self.grupo_setas.add(seta)
                     self.todas_sprites.add(seta)
-                    self.var_seta += 1
-                    #print(self.lista_setas_tela)
+                    self.cod_seta += 1
 
         self.current_time = pygame.time.get_ticks()
         if self.end_time < self.current_time:

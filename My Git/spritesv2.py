@@ -192,6 +192,12 @@ class Enemy(pygame.sprite.Sprite):
         self.pos += self.vel + 0.5 * self.acc
         
         self.rect.midbottom =  self.pos
+
+        if self.pos.x >= 1400:
+            self.pos.x = 2
+            
+        if self.pos.x < 0:
+            self.pos.x = 1398
         
         '''if self.pos.x >= 1000:
             self.pos.x = 1000
@@ -338,7 +344,17 @@ class Setas(pygame.sprite.Sprite):
 class Coracao(pygame.sprite.Sprite):
 
     def __init__(self, game, x, cod):
-        pass
+
+        pygame.sprite.Sprite.__init__(self)
+        self.game = game
+        self.image = pygame.transform.scale(self.game.image_heart, (64,64))
+        #self.image.set_colorkey(WHITE)
+        self.cod = cod
+        self.rect = self.game.image_heart.get_rect()
+        self.rect.y = 30
+        self.rect.x = x
+        self.pos = (self.rect.x, self.rect.y)
+
     
 class Tile(pygame.sprite.Sprite):
     

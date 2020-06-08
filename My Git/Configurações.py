@@ -4,9 +4,11 @@ ALTURA = 700
 TILE_SIZE = 70
 FPS = 60
 DIFICULDADE = 'facil'
+VIDAS = 3
 
 SPRITESHEET_ENEMY = 'Enemy.png'
 SPRITESHEE_KEYS = 'Keys.png'
+HEART_PNG = 'Heart.png'
 
 #Jogador
 PLAYER_ACC = 0.5
