@@ -1,7 +1,5 @@
 import pygame
 import os
-import random
-import time
 from Configurações import *
 vec = pygame.math.Vector2
 
@@ -74,7 +72,7 @@ class Player(pygame.sprite.Sprite):
         # Controle de ticks de animação: troca de imagem a cada self.frame_ticks milissegundos.
         self.frame_ticks = 300
         
-        self.pos = vec(ALTURA/2, LARGURA/2)
+        self.pos = (175, 500)
         self.vel = vec(0,0)
         self.acc = vec(0,0)
         
@@ -83,6 +81,7 @@ class Player(pygame.sprite.Sprite):
         hits = pygame.sprite.spritecollide(self, self.game.platforms, False)
         self.rect.x -= 1
         if hits:
+            
             self.vel.y = -20 
                
     def update(self):
@@ -118,56 +117,28 @@ class Player(pygame.sprite.Sprite):
         self.acc = vec(0,GRAVIDADE)
         self.vy = 0
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_a]:
+        if keys[pygame.K_LEFT]:
             self.acc.x = -PLAYER_ACC
             self.state = WALKING
             
-        if keys[pygame.K_d]:
+        if keys[pygame.K_RIGHT]:
             self.acc.x = PLAYER_ACC
             self.state = WALKING
         
         else:
             self.state = STILL
             
-            
         self.acc.x += self.vel.x * PLAYER_FRICTION            
         self.vel += self.acc
         self.pos += self.vel + 0.5 * self.acc
         
-        self.rect.midbottom = self.pos
+        self.rect.midbottom =  self.pos
         
-        '''if self.pos.x >= 1000:
-            self.pos.x = 1000
+        if self.pos.x >= 700:
+            self.pos.x = 2
         if self.pos.x < 0:
-            self.pos.x = 0'''
+            self.pos.x = 698
               
-class Platforms(pygame.sprite.Sprite):
-    def __init__(self,x):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(os.path.join(imagem1, "grassMid.png")).convert()
-        self.image.set_colorkey(WHITE)
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = ALTURA-120
-        
-class Platforms2(pygame.sprite.Sprite):
-    def __init__(self,x):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(os.path.join(imagem1, "grassCenter.png")).convert()
-        self.image.set_colorkey(WHITE)
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = ALTURA-80
-        
-class Platforms3(pygame.sprite.Sprite):
-    def __init__(self,x):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(os.path.join(imagem1, "grassCenter.png")).convert()
-        self.image.set_colorkey(WHITE)
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = ALTURA-40
-
 class Spritesheet():
     
     def __init__(self, filename):
@@ -193,7 +164,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.pos = vec(x, y)
+        self.pos = vec(500, 100)
         self.vel = vec(0,0)
         self.acc = vec(0,0)
         self.end = x + distance
@@ -219,10 +190,10 @@ class Enemy(pygame.sprite.Sprite):
         
         self.rect.midbottom =  self.pos
         
-        '''if self.pos.x >= 1000:
+        if self.pos.x >= 1000:
             self.pos.x = 1000
         if self.pos.x < 0:
-            self.pos.x = 0'''
+            self.pos.x = 0
 
     def animate(self):
         
@@ -278,94 +249,28 @@ class Enemy(pygame.sprite.Sprite):
         for frame in self.walk_frames_l:
             self.walk_frames_r.append(pygame.transform.flip(frame, True, False))
 
-
-
-
-class Setas(pygame.sprite.Sprite):
-
-    def __init__(self, game, x, cod):
+class Tile(pygame.sprite.Sprite):
+    
+    def __init__(self, tile_img, row, column):
+    
+        # Construtor da classe pai (Sprite).
         pygame.sprite.Sprite.__init__(self)
-        self.game = game
-        self.load_images()
-        self.lista_opcoes =  ['cima', 'baixo', 'direita', 'esquerda']
-        self.sentido = random.choice(self.lista_opcoes)
-        if self.sentido == 'cima':
-            self.image = self.seta_cima
-        elif self.sentido == 'baixo':
-            self.image = self.seta_baixo
-        elif self.sentido == 'direita':
-            self.image = self.seta_direita
-        else:
-            self.image = self.seta_esquerda
 
-        self.image.set_colorkey(BLACK)
+        # Aumenta o tamanho do tile.
+        tile_img = pygame.transform.scale(tile_img, (TILE_SIZE, TILE_SIZE))
+
+        # Define a imagem do tile.
+        self.image = tile_img
+        # Detalhes sobre o posicionamento.
         self.rect = self.image.get_rect()
-        self.rect.y = 50
-        self.rect.x = x
-        self.pos = (self.rect.x, self.rect.y)
-        self.cod = cod
 
+        # Posiciona o tile
+        self.rect.x = TILE_SIZE * column
+        self.rect.y = TILE_SIZE * row
 
-    def retorno(self):
-        return self.sentido
-
-    def load_images(self):
-        
-        self.seta_cima = self.game.spritesheet_keys.get_image(32,0,32,32)
-        self.seta_baixo = self.game.spritesheet_keys.get_image(32,32,32,32)
-        self.seta_esquerda = self.game.spritesheet_keys.get_image(0,32,32,32)
-        self.seta_direita = self.game.spritesheet_keys.get_image(64,32,32,32)
-
-        self.seta_cima_erro = self.game.spritesheet_keys.get_image(0,64,32,32)
-        self.seta_baixo_erro = self.game.spritesheet_keys.get_image(64,64,32,32)
-        self.seta_esquerda_erro = self.game.spritesheet_keys.get_image(0,0,32,32)
-        self.seta_direita_erro = self.game.spritesheet_keys.get_image(64,0,32,32)
-
-        self.seta_cima_acerto = self.game.spritesheet_keys.get_image(32,128,32,32)
-        self.seta_baixo_acerto = self.game.spritesheet_keys.get_image(32,160,32,32)
-        self.seta_esquerda_acerto = self.game.spritesheet_keys.get_image(0,160,32,32)
-        self.seta_direita_acerto = self.game.spritesheet_keys.get_image(64,160,32,32)
-
-    def img_acerto(self):
-
-        if self.sentido == 'cima':
-            self.image = self.seta_cima_acerto
-        elif self.sentido == 'baixo':
-            self.image = self.seta_baixo_acerto
-        elif self.sentido == 'direita':
-            self.image = self.seta_direita_acerto
-        else:
-            self.image = self.seta_esquerda_acerto
-
-    def img_erro(self):
-
-        if self.sentido == 'cima':
-            self.image = self.seta_cima_erro
-        elif self.sentido == 'baixo':
-            self.image = self.seta_baixo_erro
-        elif self.sentido == 'direita':
-            self.image = self.seta_direita_erro
-        else:
-            self.image = self.seta_esquerda_erro
-
-    def acerto(self):
-        self.game.grupo_setas.remove(self)
-        self.game.todas_sprites.remove(self)
-        self.img_acerto()
-        self.game.grupo_setas_certo.add(self)
-        self.game.todas_sprites.add(self)
-        self.game.pos_seta += 1
-
-    def erro(self):
-        self.game.grupo_setas.remove(self)
-        self.game.todas_sprites.remove(self)
-        self.img_erro()
-        self.game.todas_sprites.add(self)
-        self.game.grupo_setas_errado.add(self)
-        self.game.pos_seta += 1
-
-
-class Coracao(pygame.sprite.Sprite):
-
-    def __init__(self, game, x, cod):
-        pass
+def load_assets(img):
+    assets = {}
+    assets[CHAO] = pygame.image.load(os.path.join(imagem1, "grassMid.png")).convert()
+    assets[TERRA] = pygame.image.load(os.path.join(imagem1, "grassCenter.png")).convert()
+    assets[CEU] = pygame.image.load(os.path.join(imagem1, "liquidWater.png")).convert()
+    return assets
