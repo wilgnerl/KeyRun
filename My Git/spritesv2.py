@@ -9,7 +9,6 @@ vec = pygame.math.Vector2
 pasta = os.path.dirname(__file__)
 imagem1 = os.path.join(pasta, "Tiles")
 
-   
 def load_spritesheet(spritesheet, rows, columns):
     # Calcula a largura e altura de cada sprite.
     sprite_width = spritesheet.get_width() // columns
@@ -364,4 +363,6 @@ def load_assets(img):
     assets[CHAO] = pygame.image.load(os.path.join(imagem1, "grassMid.png")).convert()
     assets[TERRA] = pygame.image.load(os.path.join(imagem1, "grassCenter.png")).convert()
     assets[CEU] = pygame.image.load(os.path.join(imagem1, "liquidWater.png")).convert()
+    assets[BASE] = pygame.image.load(os.path.join(imagem1, "sandMid.png")).convert()
+    
     return assets
