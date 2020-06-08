@@ -30,27 +30,28 @@ class Game:
         self.todas_sprites = pygame.sprite.Group()
         self.platforms = pygame.sprite.Group()
         self.enemys = pygame.sprite.Group()
-        self.player = Player(self)
-        self.todas_sprites.add(self.player)
         self.grupo_setas = pygame.sprite.Group()
         self.grupo_setas_certo = pygame.sprite.Group()
         self.grupo_setas_errado = pygame.sprite.Group()
+        self.background = pygame.sprite.Group()
 
-        for i in range(0,5000, TILE_SIZE):
-            p1 = Platforms(i)
-            self.platforms.add(p1)
-            self.todas_sprites.add(p1)
+        assets = load_assets(imagem1)
         
-        for i in range(0,5000, TILE_SIZE):
-            p1 = Platforms2(i)
-            self.platforms.add(p1)
-            self.todas_sprites.add(p1)
-            
-        for i in range(0,5000, TILE_SIZE):
-            p1 = Platforms3(i)
-            self.platforms.add(p1)
-            self.todas_sprites.add(p1)
-            
+        for row in range(len(MAP)):
+            for column in range(len(MAP[row])):
+                tile_type = MAP[row][column]
+                if tile_type == 3:
+                    tile = Tile(assets[tile_type], row, column)
+                    self.background.add(tile)
+                    self.todas_sprites.add(tile) 
+                    
+                else:
+                    tile = Tile(assets[tile_type], row, column)
+                    self.platforms.add(tile)
+                    self.todas_sprites.add(tile)
+
+        self.player = Player(self)
+        self.todas_sprites.add(self.player) 
         self.e = Enemy(self, 500, ALTURA - 40, 200)
         self.todas_sprites.add(self.e)
         self.enemys.add(self.e)
@@ -77,14 +78,6 @@ class Game:
             if hits:
                 self.player.pos.y = hits[0].rect.top 
                 self.player.vel.y = 0 
-                
-        if self.player.rect.right >= LARGURA/2:
-            self.player.pos.x -= abs(self.player.vel.x)
-            for plat in self.platforms:
-                plat.rect.x -= abs(self.player.vel.x + 0.5*self.player.acc.x)
-            
-            for enemy in self.enemys:
-                enemy.pos.x -= abs(self.player.vel.x + 0.5*self.player.acc.x)
         
         for enemy in self.enemys:        
             if enemy.vel.y > 0:
@@ -92,14 +85,6 @@ class Game:
                 if hits:
                     enemy.pos.y = hits[0].rect.top
                     enemy.vel.y = 0
-        
-        if self.player.rect.right < LARGURA/2:         
-            self.player.pos.x += abs(self.player.vel.x)
-            for plat in self.platforms:
-                plat.rect.x += abs(self.player.vel.x + 0.5*self.player.acc.x)
-
-            for enemy in self.enemys:
-                enemy.pos.x += abs(self.player.vel.x + 0.5*self.player.acc.x)
 
         for enemy in self.enemys:
             if self.distancia(self.player, enemy) < 150 and not self.bool_contato:

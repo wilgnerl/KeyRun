@@ -141,33 +141,6 @@ class Player(pygame.sprite.Sprite):
         if self.pos.x < 0:
             self.pos.x = 0'''
               
-class Platforms(pygame.sprite.Sprite):
-    def __init__(self,x):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(os.path.join(imagem1, "grassMid.png")).convert()
-        self.image.set_colorkey(WHITE)
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = ALTURA-120
-        
-class Platforms2(pygame.sprite.Sprite):
-    def __init__(self,x):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(os.path.join(imagem1, "grassCenter.png")).convert()
-        self.image.set_colorkey(WHITE)
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = ALTURA-80
-        
-class Platforms3(pygame.sprite.Sprite):
-    def __init__(self,x):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(os.path.join(imagem1, "grassCenter.png")).convert()
-        self.image.set_colorkey(WHITE)
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = ALTURA-40
-
 class Spritesheet():
     
     def __init__(self, filename):
@@ -278,9 +251,6 @@ class Enemy(pygame.sprite.Sprite):
         for frame in self.walk_frames_l:
             self.walk_frames_r.append(pygame.transform.flip(frame, True, False))
 
-
-
-
 class Setas(pygame.sprite.Sprite):
 
     def __init__(self, game, x, cod):
@@ -364,8 +334,33 @@ class Setas(pygame.sprite.Sprite):
         self.game.grupo_setas_errado.add(self)
         self.game.pos_seta += 1
 
-
 class Coracao(pygame.sprite.Sprite):
 
     def __init__(self, game, x, cod):
         pass
+    
+class Tile(pygame.sprite.Sprite):
+    
+    def __init__(self, tile_img, row, column):
+    
+        # Construtor da classe pai (Sprite).
+        pygame.sprite.Sprite.__init__(self)
+
+        # Aumenta o tamanho do tile.
+        tile_img = pygame.transform.scale(tile_img, (TILE_SIZE, TILE_SIZE))
+
+        # Define a imagem do tile.
+        self.image = tile_img
+        # Detalhes sobre o posicionamento.
+        self.rect = self.image.get_rect()
+
+        # Posiciona o tile
+        self.rect.x = TILE_SIZE * column
+        self.rect.y = TILE_SIZE * row
+        
+def load_assets(img):
+    assets = {}
+    assets[CHAO] = pygame.image.load(os.path.join(imagem1, "grassMid.png")).convert()
+    assets[TERRA] = pygame.image.load(os.path.join(imagem1, "grassCenter.png")).convert()
+    assets[CEU] = pygame.image.load(os.path.join(imagem1, "liquidWater.png")).convert()
+    return assets
