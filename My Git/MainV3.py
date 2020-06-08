@@ -79,7 +79,7 @@ class Game:
              self.draw()
     
     def update(self):
-        #global FPS
+        global FPS
         #Atualiza o loop
         self.todas_sprites.update()
         if self.player.vel.y > 0:
@@ -220,7 +220,8 @@ class Game:
                 if (evento.type == pygame.KEYDOWN) and (evento.key == pygame.K_ESCAPE):
                     waiting = False
                     self.running = False
-                      
+                
+           
     def draw_text(self, text, size, color, x, y):
         font = pygame.font.Font(self.font_name, size)
         text_surface = font.render(text, True, color)
