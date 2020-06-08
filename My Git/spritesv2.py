@@ -136,11 +136,11 @@ class Player(pygame.sprite.Sprite):
         
         self.rect.midbottom = self.pos
         
-        if self.pos.x >= 700:
+        if self.pos.x >= 1400:
             self.pos.x = 2
             
         if self.pos.x < 0:
-            self.pos.x = 695
+            self.pos.x = 1398
               
 class Spritesheet():
     
