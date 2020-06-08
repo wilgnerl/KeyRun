@@ -52,7 +52,7 @@ class Game:
 
         self.player = Player(self)
         self.todas_sprites.add(self.player) 
-        self.e = Enemy(self, 500, ALTURA - 40, 200)
+        self.e = Enemy(self, 600, ALTURA - 40, 200)
         self.todas_sprites.add(self.e)
         self.enemys.add(self.e)
 
