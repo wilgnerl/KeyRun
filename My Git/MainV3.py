@@ -18,6 +18,7 @@ class Game:
         self.load_data()
         self.end_time = 0
         self.bool_contato = False
+        self.acertos = 0
     
     def load_data(self):
         self.dir = os.path.dirname(__file__)
@@ -61,7 +62,7 @@ class Game:
 
         self.player = Player(self)
         self.todas_sprites.add(self.player) 
-        self.e = Enemy(self, 1300, ALTURA - 40, 200)
+        self.e = Enemy(self, 300, ALTURA - 40, 200)
         self.todas_sprites.add(self.e)
         self.enemys.add(self.e)
 
@@ -103,6 +104,7 @@ class Game:
                 self.lista_setas_tela = []
                 self.pos_seta = 0
                 self.cod_seta = 0
+                self.acertos = 0
                 for i in range(50,550,100):
                     seta = Setas(self, i, self.cod_seta)
                     self.lista_setas_tela.append(seta.retorno())
@@ -114,6 +116,8 @@ class Game:
         if self.end_time < self.current_time:
             FPS = 60
             self.bool_contato = False
+            if self.acertos == 5:
+                self.e.kill()
             for seta in self.grupo_setas:
                 self.grupo_setas.remove(seta)
                 self.todas_sprites.remove(seta)

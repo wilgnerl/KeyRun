@@ -176,7 +176,7 @@ class Enemy(pygame.sprite.Sprite):
 
         self.animate()
         self.acc = vec(0,GRAVIDADE)
-        self.vel.y = 3
+        #self.vel.y = 3
         if self.vel.x >= 0 and self.rect.x < self.end:
             self.vel.x = 0.8
         elif self.rect.x == self.end:
@@ -186,11 +186,11 @@ class Enemy(pygame.sprite.Sprite):
         elif self.rect.x == self.start:
             self.vel.x = 0.8
 
-        self.acc.x += self.vel.x * PLAYER_FRICTION            
+        self.acc.x += self.vel.x * PLAYER_FRICTION        
         self.vel += self.acc
         self.pos += self.vel + 0.5 * self.acc
         
-        self.rect.midbottom =  self.pos
+        self.rect.midbottom = self.pos
 
         if self.pos.x >= 1400:
             self.pos.x = 2
@@ -198,10 +198,6 @@ class Enemy(pygame.sprite.Sprite):
         if self.pos.x < 0:
             self.pos.x = 1398
         
-        '''if self.pos.x >= 1000:
-            self.pos.x = 1000
-        if self.pos.x < 0:
-            self.pos.x = 0'''
 
     def animate(self):
         
@@ -257,6 +253,15 @@ class Enemy(pygame.sprite.Sprite):
         for frame in self.walk_frames_l:
             self.walk_frames_r.append(pygame.transform.flip(frame, True, False))
 
+    
+    def kill(self):
+        self.vel.y = -5
+        #self.vel.x = -20
+        self.game.enemys.remove(self)
+        #self.game.todas_sprites.remove(self)
+        self.image = self.standing_frames[0]
+
+
 class Setas(pygame.sprite.Sprite):
 
     def __init__(self, game, x, cod):
@@ -311,6 +316,7 @@ class Setas(pygame.sprite.Sprite):
             self.image = self.seta_direita_acerto
         else:
             self.image = self.seta_esquerda_acerto
+        self.game.acertos += 1
 
     def img_erro(self):
 
