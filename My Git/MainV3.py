@@ -4,6 +4,7 @@ from Configurações import *
 from spritesv2 import *
 
 
+
 class Game:
     
     def __init__(self):
@@ -17,8 +18,12 @@ class Game:
         self.font_name = pygame.font.match_font(FONT_NAME)
         self.load_data()
         self.end_time = 0
-        self.bool_contato = False
+        self.confronto_liberado = True
         self.acertos = 0
+        self.start = pygame.time.get_ticks()
+        self.cod_enemy = 0
+        self.vidas = VIDAS
+        self.setas_apertadas = 0
     
     def load_data(self):
         self.dir = os.path.dirname(__file__)
@@ -62,10 +67,12 @@ class Game:
 
         self.player = Player(self)
         self.todas_sprites.add(self.player) 
-        self.e = Enemy(self, 300, ALTURA - 40, 200)
+
+    
+        self.e = Enemy(self, 700, ALTURA - 40, 200)
         self.todas_sprites.add(self.e)
         self.enemys.add(self.e)
-
+        self.cod_enemy += 1
         
         self.run()
      
@@ -80,9 +87,21 @@ class Game:
              self.draw()
     
     def update(self):
+
         global FPS
+
         #Atualiza o loop
         self.todas_sprites.update()
+
+        if DIFICULDADE == 'facil':
+            self.dificuldade_setas = 300
+        elif DIFICULDADE == 'medio':
+            self.dificuldade_setas = 500
+        elif DIFICULDADE == 'dificil':
+            self.dificuldade_setas = 700
+        elif DIFICULDADE == 'god':
+            self.dificuldade_setas = 900
+
         if self.player.vel.y > 0:
             hits = pygame.sprite.spritecollide(self.player, self.platforms, False)
             if hits:
@@ -96,37 +115,63 @@ class Game:
                     enemy.pos.y = hits[0].rect.top
                     enemy.vel.y = 0
 
+        # Spawna inimigos a cada 10 segundos
+        self.now = pygame.time.get_ticks()
+        if self.now - self.start > TEMPO_SPAWN_INIMIGO:
+            self.enemy = Enemy(self, random.randint(40,1200), random.randint(1,ALTURA - 60), random.randint(100,200))
+            self.todas_sprites.add(self.enemy)
+            self.enemys.add(self.enemy)
+            self.start = self.now
+            self.cod_enemy += 1
+        
+        # Verifica a distancia entre inimigo e player para assim ativar modo slowmotion
         for enemy in self.enemys:
-            if self.distancia(self.player, enemy) < 150 and not self.bool_contato:
+            if self.distancia(self.player, enemy) < 150 and self.confronto_liberado:
                 FPS = 20
-                self.bool_contato = True
+                self.confronto_liberado = False
                 self.end_time = pygame.time.get_ticks() + 3000
                 self.lista_setas_tela = []
+                self.setas_apertadas = 0
                 self.pos_seta = 0
                 self.cod_seta = 0
                 self.acertos = 0
-                for i in range(50,550,100):
+                self.enemy_fight = enemy
+                for i in range(50, self.dificuldade_setas, 100):
                     seta = Setas(self, i, self.cod_seta)
                     self.lista_setas_tela.append(seta.retorno())
                     self.grupo_setas.add(seta)
                     self.todas_sprites.add(seta)
                     self.cod_seta += 1
 
-        self.current_time = pygame.time.get_ticks()
-        if self.end_time < self.current_time:
-            FPS = 60
-            self.bool_contato = False
-            if self.acertos == 5:
-                self.e.kill()
-            for seta in self.grupo_setas:
-                self.grupo_setas.remove(seta)
-                self.todas_sprites.remove(seta)
-            for seta in self.grupo_setas_certo:
-                self.grupo_setas_certo.remove(seta)
-                self.todas_sprites.remove(seta)
-            for seta in self.grupo_setas_errado:
-                self.grupo_setas_errado.remove(seta)
-                self.todas_sprites.remove(seta)
+        if not self.confronto_liberado:
+            self.current_time = pygame.time.get_ticks()
+
+            if self.end_time < self.current_time or self.setas_apertadas == self.cod_seta and not self.confronto_liberado:
+                FPS = 60
+                if self.acertos == self.setas_apertadas and self.setas_apertadas != 0:
+                    self.enemy_fight.kill()
+                else:
+                    self.vidas -= 1
+                    for coracao in self.grupo_coracoes:
+                        if coracao.cod == self.vidas:
+                            self.grupo_coracoes.remove(coracao)
+                            self.todas_sprites.remove(coracao)
+            
+                for seta in self.grupo_setas:
+                    self.grupo_setas.remove(seta)
+                    self.todas_sprites.remove(seta)
+                for seta in self.grupo_setas_certo:
+                    self.grupo_setas_certo.remove(seta)
+                    self.todas_sprites.remove(seta)
+                for seta in self.grupo_setas_errado:
+                    self.grupo_setas_errado.remove(seta)
+                    self.todas_sprites.remove(seta)
+
+                self.confronto_liberado = True
+
+        if self.vidas == 0:
+            self.running = False
+            self.playing = False
                 
     def events(self):
         #Eventos do loop

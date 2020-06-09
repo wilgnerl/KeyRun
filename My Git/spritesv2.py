@@ -171,12 +171,16 @@ class Enemy(pygame.sprite.Sprite):
         self.acc = vec(0,0)
         self.end = x + distance
         self.start = x
+        self.animar = True
+        self.sumir = False
+        
         
     def update(self):
-
-        self.animate()
-        self.acc = vec(0,GRAVIDADE)
-        #self.vel.y = 3
+        
+        if self.animar:
+            self.animate()
+        self.acc = vec(0, GRAVIDADE)
+        self.vy = 0
         if self.vel.x >= 0 and self.rect.x < self.end:
             self.vel.x = 0.8
         elif self.rect.x == self.end:
@@ -186,9 +190,10 @@ class Enemy(pygame.sprite.Sprite):
         elif self.rect.x == self.start:
             self.vel.x = 0.8
 
-        self.acc.x += self.vel.x * PLAYER_FRICTION        
+        self.acc.x += self.vel.x * PLAYER_FRICTION            
         self.vel += self.acc
-        self.pos += self.vel + 0.5 * self.acc
+        self.pos.x += self.vel.x + 0.5 * self.acc.x
+        self.pos.y += self.vel.y + 1 * self.acc.y
         
         self.rect.midbottom = self.pos
 
@@ -197,6 +202,15 @@ class Enemy(pygame.sprite.Sprite):
             
         if self.pos.x < 0:
             self.pos.x = 1398
+
+        self.current_time = pygame.time.get_ticks()
+
+        if self.sumir:
+            if self.end_time < self.current_time:
+                self.game.enemys.remove(self)
+            if self.end_time + 1500 < self.current_time:
+                self.game.todas_sprites.remove(self)
+                self.game.confronto_liberado = True
         
 
     def animate(self):
@@ -223,13 +237,6 @@ class Enemy(pygame.sprite.Sprite):
                 self.current_frame = (self.current_frame + 1) % len(self.standing_frames)
                 self.image = self.standing_frames[self.current_frame]
                 
-    def jump(self):
-        self.rect.x += 1
-        hits = pygame.sprite.groupcollide(self, self.game.platforms, False, False)
-        self.rect.x -= 1
-        if hits:
-            self.vel.y = -20 
-                
     def load_images(self):
         self.standing_frames = [self.game.spritesheet_enemy.get_image(112, 19, 16, 13), #0
                             self.game.spritesheet_enemy.get_image(112, 19, 16, 13),
@@ -255,11 +262,12 @@ class Enemy(pygame.sprite.Sprite):
 
     
     def kill(self):
-        self.vel.y = -5
-        #self.vel.x = -20
-        self.game.enemys.remove(self)
-        #self.game.todas_sprites.remove(self)
+        self.vel.y = -10
+        #self.game.enemys.remove(self)
+        self.animar = False
         self.image = self.standing_frames[0]
+        self.end_time = pygame.time.get_ticks() + 500
+        self.sumir = True
 
 
 class Setas(pygame.sprite.Sprite):
@@ -316,7 +324,6 @@ class Setas(pygame.sprite.Sprite):
             self.image = self.seta_direita_acerto
         else:
             self.image = self.seta_esquerda_acerto
-        self.game.acertos += 1
 
     def img_erro(self):
 
@@ -336,6 +343,8 @@ class Setas(pygame.sprite.Sprite):
         self.game.grupo_setas_certo.add(self)
         self.game.todas_sprites.add(self)
         self.game.pos_seta += 1
+        self.game.setas_apertadas += 1
+        self.game.acertos += 1
 
     def erro(self):
         self.game.grupo_setas.remove(self)
@@ -344,6 +353,7 @@ class Setas(pygame.sprite.Sprite):
         self.game.todas_sprites.add(self)
         self.game.grupo_setas_errado.add(self)
         self.game.pos_seta += 1
+        self.game.setas_apertadas += 1
 
 class Coracao(pygame.sprite.Sprite):
 
@@ -352,7 +362,6 @@ class Coracao(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
         self.image = pygame.transform.scale(self.game.image_heart, (64,64))
-        #self.image.set_colorkey(WHITE)
         self.cod = cod
         self.rect = self.game.image_heart.get_rect()
         self.rect.y = 30
