@@ -281,7 +281,6 @@ class Setas(pygame.sprite.Sprite):
         self.pos = (self.rect.x, self.rect.y)
         self.cod = cod
 
-
     def retorno(self):
         return self.sentido
 
@@ -353,8 +352,7 @@ class Coracao(pygame.sprite.Sprite):
         self.rect.y = 30
         self.rect.x = x
         self.pos = (self.rect.x, self.rect.y)
-
-    
+  
 class Tile(pygame.sprite.Sprite):
     
     def __init__(self, tile_img, row, column):
