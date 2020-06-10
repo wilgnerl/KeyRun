@@ -145,18 +145,19 @@ class Game:
 
         if not self.confronto_liberado:
             self.current_time = pygame.time.get_ticks()
-
             if self.end_time < self.current_time or self.setas_apertadas == self.cod_seta and not self.confronto_liberado:
-                FPS = 60
                 if self.acertos == self.setas_apertadas and self.setas_apertadas != 0:
+                    FPS = 60
                     self.enemy_fight.kill()
+                    self.confronto_liberado = True
                 else:
                     self.vidas -= 1
                     for coracao in self.grupo_coracoes:
                         if coracao.cod == self.vidas:
                             self.grupo_coracoes.remove(coracao)
                             self.todas_sprites.remove(coracao)
-            
+                            self.confronto_liberado = True
+
                 for seta in self.grupo_setas:
                     self.grupo_setas.remove(seta)
                     self.todas_sprites.remove(seta)
@@ -167,7 +168,7 @@ class Game:
                     self.grupo_setas_errado.remove(seta)
                     self.todas_sprites.remove(seta)
 
-                self.confronto_liberado = True
+                
 
         if self.vidas == 0:
             self.running = False
