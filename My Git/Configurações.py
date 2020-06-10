@@ -18,16 +18,8 @@ SPRITESHEET_HERO = 'hero_sprites.png'
 PLAYER_ACC = 0.5
 PLAYER_FRICTION = -0.12
 GRAVIDADE = 0.8
-PLAYER_JUMP = 16
+PLAYER_JUMP = 20
 VIDAS = 3
-
-# Define estados possíveis do jogador
-STILL = 0
-WALKING = 1
-JUMPING = 2
-FIGHTING = 3
-SWIMMING = 4
-FALLING = 2
 
 #MAPA TILES
 CHAO = 1
