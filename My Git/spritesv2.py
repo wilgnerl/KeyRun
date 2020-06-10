@@ -9,137 +9,127 @@ vec = pygame.math.Vector2
 pasta = os.path.dirname(__file__)
 imagem1 = os.path.join(pasta, "Tiles")
 
-def load_spritesheet(spritesheet, rows, columns):
-    # Calcula a largura e altura de cada sprite.
-    sprite_width = spritesheet.get_width() // columns
-    sprite_height = spritesheet.get_height() // rows
-    
-    # Percorre todos os sprites adicionando em uma lista.
-    sprites = []
-    for row in range(rows):
-        for column in range(columns):
-            # Calcula posição do sprite atual
-            x = column * sprite_width
-            y = row * sprite_height
-            # Define o retângulo que contém o sprite atual
-            dest_rect = pygame.Rect(x, y, sprite_width, sprite_height)
-
-            # Cria uma imagem vazia do tamanho do sprite
-            image = pygame.Surface((sprite_width, sprite_height), pygame.SRCALPHA)
-            # Copia o sprite atual (do spritesheet) na imagem
-            image.blit(spritesheet, (0, 0), dest_rect)
-            sprites.append(image)
-    return sprites
-
 class Player(pygame.sprite.Sprite):
     
     def __init__(self, game):
-        
-        # Construtor da classe pai (Sprite).
         pygame.sprite.Sprite.__init__(self)
         self.game = game
-        player = os.path.join(pasta, "Tiles") 
-        self.player_sheet = pygame.image.load(os.path.join(player, "Hero1.gif")).convert_alpha()
-        #self.player_sheet.set_colorkey(WHITE)
-        # Aumenta o tamanho do spritesheet para ficar mais fácil de ver
-        self.player_sheet = pygame.transform.scale(self.player_sheet, (300, 300))
-        
-        
-        # Define sequências de sprites de cada animação
-        spritesheet = load_spritesheet(self.player_sheet, 4, 4)
-        self.animations = {
-            STILL: spritesheet[0:4],
-            WALKING: spritesheet[4:7],
-            JUMPING: spritesheet[0:4],
-            FIGHTING: spritesheet[8:12],
-            SWIMMING: spritesheet[12:16],
-        }
-        
-        # Define estado atual (que define qual animação deve ser mostrada)
-        self.state = STILL
-        # Define animação atual
-        self.animation = self.animations[self.state]
-        # Inicializa o primeiro quadro da animação
-        self.frame = 0
-        self.image = self.animation[self.frame]
-        # Detalhes sobre o posicionamento.
+        self.walking = False
+        self.jumping = False
+        self.current_frame = 0
+        self.last_update = 0
+        self.load_images()
+        self.image = self.standing_frames[0]
         self.rect = self.image.get_rect()
-        
-        # Centraliza na tela.
-        self.rect.center = (ALTURA/2, LARGURA/2)
-        
-        self.last_update = pygame.time.get_ticks()
+        self.rect.center = (LARGURA / 2, ALTURA / 2)
+        self.pos = vec(LARGURA / 2, ALTURA / 2)
+        self.vel = vec(0, 0)
+        self.acc = vec(0, 0)
 
-        # Controle de ticks de animação: troca de imagem a cada self.frame_ticks milissegundos.
-        self.frame_ticks = 300
+    def load_images(self):
+        self.standing_frames = [self.game.spritesheet_hero.get_image(19, 114, 10, 14),
+                                self.game.spritesheet_hero.get_image(35, 114, 10, 14),
+                                self.game.spritesheet_hero.get_image(51, 114, 10, 14),
+                                self.game.spritesheet_hero.get_image(67, 114, 10, 14)]
         
-        self.pos = vec(ALTURA/2, LARGURA/2)
-        self.vel = vec(0,0)
-        self.acc = vec(0,0)
+        for frame in self.standing_frames:
+            frame.set_colorkey(BLACK)
         
+        self.walk_frames_r = [self.game.spritesheet_hero.get_image(19, 146, 11, 14),
+                              self.game.spritesheet_hero.get_image(35, 146, 11, 14),
+                              self.game.spritesheet_hero.get_image(51, 146, 11, 14)]
+        
+        self.walk_frames_l = []
+        
+        for frame in self.walk_frames_r:
+            frame.set_colorkey(BLACK)
+            self.walk_frames_l.append(pygame.transform.flip(frame, True, False))
+        
+        
+        '''self.jump_frames_r = [self.game.spritesheet_hero.get_image(17, 193, 14, 14),
+                           self.game.spritesheet_hero.get_image(33, 193, 14, 14)]        
+        
+        self.jump_frames_l = []
+        
+        for frame in self.jump_frames_r:
+            frame.set_colorkey(BLACK)
+            self.jump_frames_l.append(pygame.transform.flip(frame, True, False))'''
+        
+        
+
     def jump(self):
-        self.rect.x += 1
+        # jump only if standing on a platform
+        self.rect.y += 1
         hits = pygame.sprite.spritecollide(self, self.game.platforms, False)
-        self.rect.x -= 1
+        self.rect.y -= 1
         if hits:
-            self.vel.y = -20 
-               
+            self.vel.y = -PLAYER_JUMP
+
     def update(self):
-        # Verifica o tick atual.
-        now = pygame.time.get_ticks()
-
-        # Verifica quantos ticks se passaram desde a ultima mudança de frame.
-        elapsed_ticks = now - self.last_update
-
-        # Se já está na hora de mudar de imagem...
-        if elapsed_ticks > self.frame_ticks:
-
-            # Marca o tick da nova imagem.
-            self.last_update = now
-
-            # Avança um quadro.
-            self.frame += 1
-
-            # Atualiza animação atual
-            self.animation = self.animations[self.state]
-            # Reinicia a animação caso o índice da imagem atual seja inválido
-            if self.frame >= len(self.animation):
-                self.frame = 0
-            
-            # Armazena a posição do centro da imagem
-            center = self.rect.center
-            # Atualiza imagem atual
-            self.image = self.animation[self.frame]
-            # Atualiza os detalhes de posicionamento
-            self.rect = self.image.get_rect()
-            self.rect.center = center
-            
-        self.acc = vec(0,GRAVIDADE)
-        self.vy = 0
+        self.animate()
+        self.acc = vec(0, GRAVIDADE)
         keys = pygame.key.get_pressed()
+        
         if keys[pygame.K_a]:
             self.acc.x = -PLAYER_ACC
-            self.state = WALKING
-            
         if keys[pygame.K_d]:
             self.acc.x = PLAYER_ACC
-            self.state = WALKING
-        
-        else:
-            self.state = STILL
-            
-            
-        self.acc.x += self.vel.x * PLAYER_FRICTION            
+
+        # apply friction
+        self.acc.x += self.vel.x * PLAYER_FRICTION
+        # equations of motion
         self.vel += self.acc
+        if abs(self.vel.x) < 0.1:
+            self.vel.x = 0
         self.pos += self.vel + 0.5 * self.acc
-        
+        # wrap around the sides of the screen
+        if self.pos.x > LARGURA + self.rect.width / 2:
+            self.pos.x = 0 - self.rect.width / 2
+        if self.pos.x < 0 - self.rect.width / 2:
+            self.pos.x = LARGURA + self.rect.width / 2
+
         self.rect.midbottom = self.pos
+
+    def animate(self):
+        now = pygame.time.get_ticks()
+        if self.vel.x != 0:
+            self.walking = True
+        else:
+            self.walking = False
+        # show walk animation
+        if self.walking:
+            if now - self.last_update > 180:
+                self.last_update = now
+                self.current_frame = (self.current_frame + 1) % len(self.walk_frames_l)
+                bottom = self.rect.bottom
+                if self.vel.x > 0:
+                    self.image = self.walk_frames_r[self.current_frame]
+                else:
+                    self.image = self.walk_frames_l[self.current_frame]
+                self.rect = self.image.get_rect()
+                self.rect.bottom = bottom
         
-        if self.pos.x >= 1400:
-            self.pos.x = 2
-            
-        if self.pos.x < 0:
-            self.pos.x = 1398
+        '''if self.jumping:
+            if now - self.last_update > 180:
+                self.last_update = now
+                self.current_frame = (self.current_frame + 1) % len(self.jump_frames_l)
+                bottom = self.rect.bottom
+                if self.vel.x > 0:
+                    self.image = self.jump_frames_r[self.current_frame]
+                else:
+                    self.image = self.jump_frames_l[self.current_frame]
+                self.rect = self.image.get_rect()
+                self.rect.bottom = bottom'''
+                
+        # show idle animation
+        if not self.jumping and not self.walking:
+            if now - self.last_update > 350:
+                self.last_update = now
+                self.current_frame = (self.current_frame + 1) % len(self.standing_frames)
+                bottom = self.rect.bottom
+                self.image = self.standing_frames[self.current_frame]
+                self.rect = self.image.get_rect()
+                self.rect.bottom = bottom    
               
 class Spritesheet():
     

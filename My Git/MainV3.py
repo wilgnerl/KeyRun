@@ -4,7 +4,6 @@ from Configurações import *
 from spritesv2 import *
 
 
-
 class Game:
     
     def __init__(self):
@@ -31,6 +30,7 @@ class Game:
         self.spritesheet_enemy = Spritesheet(os.path.join(img_dir, SPRITESHEET_ENEMY))
         self.spritesheet_keys = Spritesheet(os.path.join(img_dir, SPRITESHEE_KEYS))
         self.image_heart = pygame.image.load(os.path.join(img_dir, HEART_PNG)).convert_alpha()
+        self.spritesheet_hero = Spritesheet(os.path.join(img_dir, SPRITESHEET_HERO))
 
     def new(self):
         #Inicia o jogo
@@ -185,6 +185,7 @@ class Game:
             if evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_SPACE:
                     self.player.jump()
+                    self.player.jumping
                 
                 if (evento.key == pygame.K_ESCAPE):
                     if self.playing:

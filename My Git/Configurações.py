@@ -12,11 +12,13 @@ TEMPO_SPAWN_INIMIGO = 10000
 SPRITESHEET_ENEMY = 'Enemy.png'
 SPRITESHEE_KEYS = 'Keys.png'
 HEART_PNG = 'Heart.png'
+SPRITESHEET_HERO = 'hero_sprites.png'
 
 #Jogador
 PLAYER_ACC = 0.5
 PLAYER_FRICTION = -0.12
 GRAVIDADE = 0.8
+PLAYER_JUMP = 16
 VIDAS = 3
 
 # Define estados possíveis do jogador
