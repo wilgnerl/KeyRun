@@ -254,7 +254,6 @@ class Enemy(pygame.sprite.Sprite):
     
     def kill(self):
         self.vel.y = -10
-        #self.game.enemys.remove(self)
         self.animar = False
         self.image = self.standing_frames[0]
         self.end_time = pygame.time.get_ticks() + 500
@@ -280,7 +279,7 @@ class Setas(pygame.sprite.Sprite):
 
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
-        self.rect.y = 50
+        self.rect.y = 30
         self.rect.x = x
         self.pos = (self.rect.x, self.rect.y)
         self.cod = cod
@@ -373,6 +372,7 @@ class Tile(pygame.sprite.Sprite):
         self.image = tile_img
         # Detalhes sobre o posicionamento.
         self.rect = self.image.get_rect()
+        self.image.set_colorkey(BLACK)
 
         # Posiciona o tile
         self.rect.x = TILE_SIZE * column
@@ -384,5 +384,7 @@ def load_assets(img):
     assets[TERRA] = pygame.image.load(os.path.join(imagem1, "grassCenter.png")).convert()
     assets[CEU] = pygame.image.load(os.path.join(imagem1, "liquidWater.png")).convert()
     assets[BASE] = pygame.image.load(os.path.join(imagem1, "sandMid.png")).convert()
+    assets[BASE_E] = pygame.image.load(os.path.join(imagem1, "sandLeft.png")).convert_alpha()
+    assets[BASE_D] = pygame.image.load(os.path.join(imagem1, "sandRight.png")).convert_alpha()
     
     return assets

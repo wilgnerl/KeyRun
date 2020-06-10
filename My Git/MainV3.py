@@ -118,7 +118,7 @@ class Game:
         # Spawna inimigos a cada 10 segundos
         self.now = pygame.time.get_ticks()
         if self.now - self.start > TEMPO_SPAWN_INIMIGO:
-            self.enemy = Enemy(self, random.randint(40,1200), random.randint(1,ALTURA - 60), random.randint(100,200))
+            self.enemy = Enemy(self, random.randint(40,1200), random.randint(100,ALTURA - 60), random.randint(100,200))
             self.todas_sprites.add(self.enemy)
             self.enemys.add(self.enemy)
             self.start = self.now
@@ -136,7 +136,7 @@ class Game:
                 self.cod_seta = 0
                 self.acertos = 0
                 self.enemy_fight = enemy
-                for i in range(50, self.dificuldade_setas, 100):
+                for i in range(30, self.dificuldade_setas, 100):
                     seta = Setas(self, i, self.cod_seta)
                     self.lista_setas_tela.append(seta.retorno())
                     self.grupo_setas.add(seta)
