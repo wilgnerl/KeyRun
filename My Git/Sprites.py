@@ -1,8 +1,6 @@
-import pygame
-import os
-import random
-import time
-from Configurações import *
+import pygame, os, random
+from Configs import *
+
 vec = pygame.math.Vector2
 
 #Configurando pasta e Assets(Figura que vai ser o player)
@@ -172,14 +170,15 @@ class Enemy(pygame.sprite.Sprite):
             self.animate()
         self.acc = vec(0, GRAVIDADE)
         self.vy = 0
-        if self.vel.x >= 0 and self.rect.x < self.end:
-            self.vel.x = 0.8
-        elif self.rect.x == self.end:
-            self.vel.x = -0.8
-        elif self.vel.x < 0 and self.rect.x > self.start:
-            self.vel.x = -0.8
-        elif self.rect.x == self.start:
-            self.vel.x = 0.8
+        if not self.sumir:
+            if self.vel.x >= 0 and self.rect.x < self.end:
+                self.vel.x = 0.8
+            elif self.rect.x == self.end:
+                self.vel.x = -0.8
+            elif self.vel.x < 0 and self.rect.x > self.start:
+                self.vel.x = -0.8
+            elif self.rect.x == self.start:
+                self.vel.x = 0.8
 
         self.acc.x += self.vel.x * PLAYER_FRICTION            
         self.vel += self.acc
@@ -197,9 +196,7 @@ class Enemy(pygame.sprite.Sprite):
         self.current_time = pygame.time.get_ticks()
 
         if self.sumir:
-            if self.end_time < self.current_time:
-                self.game.enemys.remove(self)
-            if self.end_time + 1500 < self.current_time:
+            if self.end_time + 1500 < self.current_time and self.sumir:
                 self.game.todas_sprites.remove(self)
                 self.game.confronto_liberado = True
         
@@ -254,15 +251,12 @@ class Enemy(pygame.sprite.Sprite):
     
     def kill(self):
         
-        global PLACAR
-        
         self.vel.y = -10
         self.animar = False
         self.image = self.standing_frames[0]
         self.end_time = pygame.time.get_ticks() + 500
         self.sumir = True
-        PLACAR += 1
-
+        self.game.placar += 1
 
 class Setas(pygame.sprite.Sprite):
 

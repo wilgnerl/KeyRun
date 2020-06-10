@@ -3,10 +3,6 @@ LARGURA = 1400
 ALTURA = 700
 TILE_SIZE = 70
 FPS = 60
-LISTA_DIFICULDADES = ['facil', 'medio', 'dificil', 'god']
-DIFICULDADE = 'facil'
-VIDAS = 3
-PONTUACAO = 0
 TEMPO_SPAWN_INIMIGO = 10000
 
 SPRITESHEET_ENEMY = 'Enemy.png'
@@ -14,14 +10,11 @@ SPRITESHEE_KEYS = 'Keys.png'
 HEART_PNG = 'Heart.png'
 SPRITESHEET_HERO = 'hero_sprites.png'
 
-PLACAR = 0
-
 #Jogador
 PLAYER_ACC = 0.5
 PLAYER_FRICTION = -0.12
 GRAVIDADE = 0.8
 PLAYER_JUMP = 20
-VIDAS = 3
 
 #MAPA TILES
 CHAO = 1
@@ -50,7 +43,7 @@ MAP = [
 TITLE = 'Bem vindo'
 FONT_NAME = 'Courier'
 
-#Cores para ser utilizada
+#Cores para serem utilizadas
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)

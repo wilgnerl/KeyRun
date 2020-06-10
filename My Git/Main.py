@@ -1,8 +1,6 @@
-import pygame
-import random, math
-from Configurações import *
-from spritesv2 import *
-
+import pygame, random, math
+from Configs import *
+from Sprites import *
 
 class Game:
     
@@ -21,8 +19,14 @@ class Game:
         self.acertos = 0
         self.start = pygame.time.get_ticks()
         self.cod_enemy = 0
-        self.vidas = VIDAS
+        self.vidas = 3
         self.setas_apertadas = 0
+        self.dificuldade = 'facil'
+        self.placar = 0
+        font1 = pygame.font.Font(pygame.font.get_default_font(), 60)
+        font2 = pygame.font.Font(pygame.font.get_default_font(), 30)
+        self.score = font2.render(' SCORE', True, BLACK)
+        self.pontos = font1.render(' 0', True, BLACK)
     
     def load_data(self):
         self.dir = os.path.dirname(__file__)
@@ -42,7 +46,6 @@ class Game:
         self.grupo_setas_errado = pygame.sprite.Group()
         self.background = pygame.sprite.Group()
         self.grupo_coracoes = pygame.sprite.Group()
-        self.placar = pygame.sprite.Group()
 
         assets = load_assets(imagem1)
         
@@ -59,15 +62,12 @@ class Game:
                     self.platforms.add(tile)
                     self.todas_sprites.add(tile)
 
-        for vida in range(VIDAS):
+        for vida in range(self.vidas):
             x_pos = [1180, 1250, 1320]
             self.coracao = Coracao(self, x_pos[vida], vida)
             self.todas_sprites.add(self.coracao)
             self.grupo_coracoes.add(self.coracao)
-        
-        font = pygame.font.Font(pygame.font.get_default_font(), 18)
-        texto = font.render('Score: {}'.format(PLACAR), True, WHITE)
- 
+
         self.player = Player(self)
         self.todas_sprites.add(self.player) 
 
@@ -91,18 +91,17 @@ class Game:
     def update(self):
 
         global FPS
-        global contador
 
         #Atualiza o loop
         self.todas_sprites.update()
 
-        if DIFICULDADE == 'facil':
+        if self.dificuldade == 'facil':
             self.dificuldade_setas = 300
-        elif DIFICULDADE == 'medio':
+        elif self.dificuldade == 'medio':
             self.dificuldade_setas = 500
-        elif DIFICULDADE == 'dificil':
+        elif self.dificuldade == 'dificil':
             self.dificuldade_setas = 700
-        elif DIFICULDADE == 'god':
+        elif self.dificuldade == 'god':
             self.dificuldade_setas = 900
 
         if self.player.vel.y > 0:
@@ -151,11 +150,13 @@ class Game:
             if self.end_time < self.current_time or self.setas_apertadas == self.cod_seta and not self.confronto_liberado:
                 if self.acertos == self.setas_apertadas and self.setas_apertadas != 0:
                     FPS = 60
-                    self.enemy_fight.kill(contador)
-                    contador += 1
+                    self.enemys.remove(self.enemy_fight)
+                    self.enemy_fight.kill()
+                    
                     self.confronto_liberado = True
                 else:
                     self.vidas -= 1
+                    FPS = 60
                     for coracao in self.grupo_coracoes:
                         if coracao.cod == self.vidas:
                             self.grupo_coracoes.remove(coracao)
@@ -172,12 +173,15 @@ class Game:
                     self.grupo_setas_errado.remove(seta)
                     self.todas_sprites.remove(seta)
 
-                
-
         if self.vidas == 0:
             self.running = False
             self.playing = False
                 
+        font1 = pygame.font.Font(pygame.font.get_default_font(), 60)
+        font2 = pygame.font.Font(pygame.font.get_default_font(), 30)
+        self.score = font2.render(' SCORE', True, BLACK)
+        self.pontos = font1.render(' {}'.format(self.placar*200), True, BLACK)
+        
     def events(self):
         #Eventos do loop
         for evento in pygame.event.get():
@@ -239,10 +243,9 @@ class Game:
     def draw(self):
         #Desenha as imagens
         self.tela.fill(GREEN2)
-        
-         
-        
         self.todas_sprites.draw(self.tela)
+        self.tela.blit(self.pontos, (0, ALTURA - 60))
+        self.tela.blit(self.score, (12, ALTURA - 90))
         
         #Sempre que desenhar use isso
         pygame.display.flip()
