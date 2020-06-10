@@ -253,11 +253,15 @@ class Enemy(pygame.sprite.Sprite):
 
     
     def kill(self):
+        
+        global PLACAR
+        
         self.vel.y = -10
         self.animar = False
         self.image = self.standing_frames[0]
         self.end_time = pygame.time.get_ticks() + 500
         self.sumir = True
+        PLACAR += 1
 
 
 class Setas(pygame.sprite.Sprite):

@@ -42,6 +42,7 @@ class Game:
         self.grupo_setas_errado = pygame.sprite.Group()
         self.background = pygame.sprite.Group()
         self.grupo_coracoes = pygame.sprite.Group()
+        self.placar = pygame.sprite.Group()
 
         assets = load_assets(imagem1)
         
@@ -63,12 +64,13 @@ class Game:
             self.coracao = Coracao(self, x_pos[vida], vida)
             self.todas_sprites.add(self.coracao)
             self.grupo_coracoes.add(self.coracao)
-            
-
+        
+        font = pygame.font.Font(pygame.font.get_default_font(), 18)
+        texto = font.render('Score: {}'.format(PLACAR), True, WHITE)
+ 
         self.player = Player(self)
         self.todas_sprites.add(self.player) 
 
-    
         self.e = Enemy(self, 900, ALTURA - 40, 200)
         self.todas_sprites.add(self.e)
         self.enemys.add(self.e)
@@ -89,6 +91,7 @@ class Game:
     def update(self):
 
         global FPS
+        global contador
 
         #Atualiza o loop
         self.todas_sprites.update()
@@ -148,7 +151,8 @@ class Game:
             if self.end_time < self.current_time or self.setas_apertadas == self.cod_seta and not self.confronto_liberado:
                 if self.acertos == self.setas_apertadas and self.setas_apertadas != 0:
                     FPS = 60
-                    self.enemy_fight.kill()
+                    self.enemy_fight.kill(contador)
+                    contador += 1
                     self.confronto_liberado = True
                 else:
                     self.vidas -= 1
@@ -235,7 +239,9 @@ class Game:
     def draw(self):
         #Desenha as imagens
         self.tela.fill(GREEN2)
-   
+        
+         
+        
         self.todas_sprites.draw(self.tela)
         
         #Sempre que desenhar use isso

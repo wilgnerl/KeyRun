@@ -4,7 +4,7 @@ ALTURA = 700
 TILE_SIZE = 70
 FPS = 60
 LISTA_DIFICULDADES = ['facil', 'medio', 'dificil', 'god']
-DIFICULDADE = 'god'
+DIFICULDADE = 'facil'
 VIDAS = 3
 PONTUACAO = 0
 TEMPO_SPAWN_INIMIGO = 10000
@@ -13,6 +13,8 @@ SPRITESHEET_ENEMY = 'Enemy.png'
 SPRITESHEE_KEYS = 'Keys.png'
 HEART_PNG = 'Heart.png'
 SPRITESHEET_HERO = 'hero_sprites.png'
+
+PLACAR = 0
 
 #Jogador
 PLAYER_ACC = 0.5
