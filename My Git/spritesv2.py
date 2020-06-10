@@ -20,6 +20,7 @@ class Player(pygame.sprite.Sprite):
         self.last_update = 0
         self.load_images()
         self.image = self.standing_frames[0]
+        self.image.set_colorkey(WHITE)
         self.rect = self.image.get_rect()
         self.rect.center = (LARGURA / 2, ALTURA / 2)
         self.pos = vec(LARGURA / 2, ALTURA / 2)
@@ -33,7 +34,7 @@ class Player(pygame.sprite.Sprite):
                                 self.game.spritesheet_hero.get_image(67, 114, 10, 14)]
         
         for frame in self.standing_frames:
-            frame.set_colorkey(BLACK)
+            frame.set_colorkey(WHITE)
         
         self.walk_frames_r = [self.game.spritesheet_hero.get_image(19, 146, 11, 14),
                               self.game.spritesheet_hero.get_image(35, 146, 11, 14),
@@ -42,14 +43,13 @@ class Player(pygame.sprite.Sprite):
         self.walk_frames_l = []
         
         for frame in self.walk_frames_r:
-            frame.set_colorkey(BLACK)
+            frame.set_colorkey(WHITE)
             self.walk_frames_l.append(pygame.transform.flip(frame, True, False))
         
         
         '''self.jump_frames_r = [self.game.spritesheet_hero.get_image(17, 193, 14, 14),
                            self.game.spritesheet_hero.get_image(33, 193, 14, 14)]        
-        
-        self.jump_frames_l = []
+
         
         for frame in self.jump_frames_r:
             frame.set_colorkey(BLACK)
@@ -133,13 +133,14 @@ class Player(pygame.sprite.Sprite):
               
 class Spritesheet():
     
-    def __init__(self, filename):
+    def __init__(self, filename, mult):
         self.spritesheet = pygame.image.load(filename).convert_alpha()
+        self.mult = mult
 
     def get_image(self, x, y, width, heigth):
         image = pygame.Surface((width, heigth))
         image.blit(self.spritesheet, (0,0), (x, y, width, heigth))
-        image = pygame.transform.scale(image, (width * 3, heigth * 3))
+        image = pygame.transform.scale(image, (width * self.mult, heigth * self.mult))
         return image       
         
 class Enemy(pygame.sprite.Sprite):

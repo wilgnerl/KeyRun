@@ -27,10 +27,10 @@ class Game:
     def load_data(self):
         self.dir = os.path.dirname(__file__)
         img_dir = os.path.join(self.dir, 'Tiles')
-        self.spritesheet_enemy = Spritesheet(os.path.join(img_dir, SPRITESHEET_ENEMY))
-        self.spritesheet_keys = Spritesheet(os.path.join(img_dir, SPRITESHEE_KEYS))
+        self.spritesheet_enemy = Spritesheet(os.path.join(img_dir, SPRITESHEET_ENEMY), 3)
+        self.spritesheet_keys = Spritesheet(os.path.join(img_dir, SPRITESHEE_KEYS), 3)
         self.image_heart = pygame.image.load(os.path.join(img_dir, HEART_PNG)).convert_alpha()
-        self.spritesheet_hero = Spritesheet(os.path.join(img_dir, SPRITESHEET_HERO))
+        self.spritesheet_hero = Spritesheet(os.path.join(img_dir, SPRITESHEET_HERO), 5)
 
     def new(self):
         #Inicia o jogo
@@ -51,7 +51,7 @@ class Game:
                 if tile_type == 3:
                     tile = Tile(assets[tile_type], row, column)
                     self.background.add(tile)
-                    self.todas_sprites.add(tile) 
+                    self.todas_sprites.add(tile)
                     
                 else:
                     tile = Tile(assets[tile_type], row, column)
@@ -69,7 +69,7 @@ class Game:
         self.todas_sprites.add(self.player) 
 
     
-        self.e = Enemy(self, 700, ALTURA - 40, 200)
+        self.e = Enemy(self, 900, ALTURA - 40, 200)
         self.todas_sprites.add(self.e)
         self.enemys.add(self.e)
         self.cod_enemy += 1
