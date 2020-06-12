@@ -3,10 +3,6 @@ from Configs import *
 from Sprites import *
 
 class Game:
-    
-  
-    pygame.init()
-    
 
     def __init__(self):
         #Inicia a tela
@@ -31,10 +27,11 @@ class Game:
         font2 = pygame.font.Font(pygame.font.get_default_font(), 30)
         self.score = font2.render(' SCORE', True, BLACK)
         self.pontos = font1.render(' 0', True, BLACK)
-
-    '''Tem que organizar direito essa parte'''    
-    musica = os.path.join("sons", "Common Fight.ogg")
-    pygame.mixer.music.load(musica)
+  
+    def musica(self): 
+        musica = os.path.join("sons", "Common Fight.ogg")
+        pygame.mixer.music.load(musica)
+        pygame.mixer.music.play(-1)
     
     def load_data(self):
         self.dir = os.path.dirname(__file__)
@@ -284,7 +281,7 @@ class Game:
                 if (evento.type == pygame.KEYDOWN) and (evento.key == pygame.K_RETURN):
                     waiting = False
                     self.running = True
-                    pygame.mixer.music.play(-1)
+                    self.musica()
                 
                 if (evento.type == pygame.KEYDOWN) and (evento.key == pygame.K_ESCAPE):
                     waiting = False
