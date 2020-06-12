@@ -53,8 +53,6 @@ class Player(pygame.sprite.Sprite):
             frame.set_colorkey(BLACK)
             self.jump_frames_l.append(pygame.transform.flip(frame, True, False))'''
         
-        
-
     def jump(self):
         # jump only if standing on a platform
         self.rect.y += 1
