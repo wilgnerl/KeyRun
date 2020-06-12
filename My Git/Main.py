@@ -87,11 +87,10 @@ class Game:
         #Inicia Loop
         self.playing = True
         while self.playing:
-            
-             self.clock.tick(FPS)
-             self.events()
-             self.update()
-             self.draw()
+            self.clock.tick(FPS)
+            self.events()
+            self.update()
+            self.draw()
     
     def update(self):
 
@@ -266,8 +265,15 @@ class Game:
         
     def show_go_screen(self):
         
-        pass
-    
+        self.tela.fill(BLACK)
+        self.draw_text('Game Over', 60, WHITE , LARGURA/2, 300)
+        self.draw_text('Aperte [Esc] Para Sair', 30, WHITE, LARGURA/2, 400)
+        self.draw_text('Aperte [X] Para começar novamente', 30 , WHITE, LARGURA/2, 450)
+        self.draw_text('Sua pontuação: {}'.format(self.placar*200), 30, WHITE, LARGURA/4, 600)
+        pygame.display.flip()
+        self.wait_for_key()
+       
+        
     def wait_for_key(self):
         waiting = True
         while waiting:
@@ -281,12 +287,21 @@ class Game:
                 if (evento.type == pygame.KEYDOWN) and (evento.key == pygame.K_RETURN):
                     waiting = False
                     self.running = True
-                    self.musica()
-                
+                    self.musica()                  
+                    
                 if (evento.type == pygame.KEYDOWN) and (evento.key == pygame.K_ESCAPE):
                     waiting = False
                     self.running = False
-                     
+                    
+                if (evento.type == pygame.KEYDOWN) and (evento.key == pygame.K_x):
+                    print('Apertei X')
+                    waiting = False
+                    self.running = True
+                    self.musica()
+                    self.vidas = 3
+                    self.placar = 0
+                    self.dificuldade = 'facil' 
+                    
     def draw_text(self, text, size, color, x, y):
         font = pygame.font.Font(self.font_name, size)
         text_surface = font.render(text, True, color)
@@ -306,6 +321,6 @@ g.show_start_screen()
 while g.running:
 
     g.new()
-    g.show_go_screen()
+    g.show_go_screen()   
     
 pygame.quit() 
