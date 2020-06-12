@@ -1,22 +1,26 @@
+#Definições de tela
 TITULO = 'Pygame'
 LARGURA = 1400
 ALTURA = 700
+
+#Definições de jogo
 TILE_SIZE = 70
 FPS = 60
 TEMPO_SPAWN_INIMIGO = 10000
 
+#Definições de arquivos
 SPRITESHEET_ENEMY = 'Enemy.png'
 SPRITESHEE_KEYS = 'Keys.png'
 HEART_PNG = 'Heart.png'
 SPRITESHEET_HERO = 'hero_sprites.png'
 
-#Jogador
+#Definições do Player
 PLAYER_ACC = 0.5
 PLAYER_FRICTION = -0.12
 GRAVIDADE = 0.8
 PLAYER_JUMP = 20
 
-#MAPA TILES
+#Mapa de Tiles
 CHAO = 1
 TERRA = 2
 CEU = 3
@@ -37,7 +41,6 @@ MAP = [
     [TERRA,	TERRA,	TERRA,	TERRA,	TERRA,	TERRA,	TERRA,	TERRA,	TERRA,	TERRA,	TERRA,	TERRA,	TERRA,	TERRA,	TERRA,	TERRA,	TERRA,	TERRA,	TERRA,	TERRA],
   
 ]
-
 
 #Tela
 TITLE = 'Bem vindo'

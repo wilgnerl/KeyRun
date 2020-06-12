@@ -9,6 +9,7 @@ imagem1 = os.path.join(pasta, "Tiles")
 
 class Player(pygame.sprite.Sprite):
     
+    #Inicia as configurações básicas do player
     def __init__(self, game):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
@@ -25,6 +26,7 @@ class Player(pygame.sprite.Sprite):
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
 
+    # Carrega as imagens para animação do player
     def load_images(self):
         self.standing_frames = [self.game.spritesheet_hero.get_image(19, 114, 10, 14),
                                 self.game.spritesheet_hero.get_image(35, 114, 10, 14),
@@ -43,24 +45,16 @@ class Player(pygame.sprite.Sprite):
         for frame in self.walk_frames_r:
             frame.set_colorkey(BLACK)
             self.walk_frames_l.append(pygame.transform.flip(frame, True, False))
-        
-        
-        '''self.jump_frames_r = [self.game.spritesheet_hero.get_image(17, 193, 14, 14),
-                           self.game.spritesheet_hero.get_image(33, 193, 14, 14)]        
 
-        
-        for frame in self.jump_frames_r:
-            frame.set_colorkey(BLACK)
-            self.jump_frames_l.append(pygame.transform.flip(frame, True, False))'''
-        
+    #Função de pulo    
     def jump(self):
-        # jump only if standing on a platform
         self.rect.y += 1
         hits = pygame.sprite.spritecollide(self, self.game.platforms, False)
         self.rect.y -= 1
         if hits:
             self.vel.y = -PLAYER_JUMP
 
+    #Função de update do player, responsável por alterar sua velocidade
     def update(self):
         self.animate()
         self.acc = vec(0, GRAVIDADE)
@@ -71,14 +65,14 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_d]:
             self.acc.x = PLAYER_ACC
 
-        # apply friction
+        #Movimentação do player
         self.acc.x += self.vel.x * PLAYER_FRICTION
-        # equations of motion
         self.vel += self.acc
         if abs(self.vel.x) < 0.1:
             self.vel.x = 0
         self.pos += self.vel + 0.5 * self.acc
-        # wrap around the sides of the screen
+
+        #Limites ao cruzar parte visivel
         if self.pos.x > LARGURA + self.rect.width / 2:
             self.pos.x = 0 - self.rect.width / 2
         if self.pos.x < 0 - self.rect.width / 2:
@@ -86,38 +80,27 @@ class Player(pygame.sprite.Sprite):
 
         self.rect.midbottom = self.pos
 
+    #Função de animação do player
     def animate(self):
         now = pygame.time.get_ticks()
         if self.vel.x != 0:
             self.walking = True
         else:
             self.walking = False
-        # show walk animation
+
         if self.walking:
             if now - self.last_update > 180:
                 self.last_update = now
                 self.current_frame = (self.current_frame + 1) % len(self.walk_frames_l)
                 bottom = self.rect.bottom
+
                 if self.vel.x > 0:
                     self.image = self.walk_frames_r[self.current_frame]
                 else:
                     self.image = self.walk_frames_l[self.current_frame]
                 self.rect = self.image.get_rect()
                 self.rect.bottom = bottom
-        
-        '''if self.jumping:
-            if now - self.last_update > 180:
-                self.last_update = now
-                self.current_frame = (self.current_frame + 1) % len(self.jump_frames_l)
-                bottom = self.rect.bottom
-                if self.vel.x > 0:
-                    self.image = self.jump_frames_r[self.current_frame]
-                else:
-                    self.image = self.jump_frames_l[self.current_frame]
-                self.rect = self.image.get_rect()
-                self.rect.bottom = bottom'''
                 
-        # show idle animation
         if not self.jumping and not self.walking:
             if now - self.last_update > 350:
                 self.last_update = now
@@ -126,7 +109,8 @@ class Player(pygame.sprite.Sprite):
                 self.image = self.standing_frames[self.current_frame]
                 self.rect = self.image.get_rect()
                 self.rect.bottom = bottom    
-              
+
+# Classe que carrega spritesheets              
 class Spritesheet():
     
     def __init__(self, filename, mult):
@@ -138,9 +122,11 @@ class Spritesheet():
         image.blit(self.spritesheet, (0,0), (x, y, width, heigth))
         image = pygame.transform.scale(image, (width * self.mult, heigth * self.mult))
         return image       
-        
+
+#Classe do inimigo        
 class Enemy(pygame.sprite.Sprite):
     
+    #Inicia as configs básicas do inimigo
     def __init__(self, game, x, y, distance):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
@@ -161,9 +147,10 @@ class Enemy(pygame.sprite.Sprite):
         self.animar = True
         self.sumir = False
         
-        
+    #Atualiza o inimigo  
     def update(self):
         
+        #Define sua velocidade de acordo com a distancia maxima definida como um dos inputs
         if self.animar:
             self.animate()
         self.acc = vec(0, GRAVIDADE)
@@ -178,6 +165,7 @@ class Enemy(pygame.sprite.Sprite):
             elif self.rect.x == self.start:
                 self.vel.x = 0.8
 
+        #Deslocamento do inimigo
         self.acc.x += self.vel.x * PLAYER_FRICTION            
         self.vel += self.acc
         self.pos.x += self.vel.x + 0.5 * self.acc.x
@@ -193,12 +181,13 @@ class Enemy(pygame.sprite.Sprite):
 
         self.current_time = pygame.time.get_ticks()
 
+        #Apaga o inimigo após certo tampo que o confronto acabou para evitar bugs
         if self.sumir:
             if self.end_time + 1500 < self.current_time and self.sumir:
                 self.game.todas_sprites.remove(self)
                 self.game.confronto_liberado = True
         
-
+    #Anima o inimigo
     def animate(self):
         
         now = pygame.time.get_ticks()
@@ -208,6 +197,7 @@ class Enemy(pygame.sprite.Sprite):
         else:
             self.walking = False
 
+        #Animação do andar
         if self.walking:
             if now - self.last_update > 175:
                 self.last_update = now
@@ -222,8 +212,11 @@ class Enemy(pygame.sprite.Sprite):
                 self.last_update = now
                 self.current_frame = (self.current_frame + 1) % len(self.standing_frames)
                 self.image = self.standing_frames[self.current_frame]
-                
+
+     # Carrega as imagens do inimigo           
     def load_images(self):
+
+        #Imagens parado
         self.standing_frames = [self.game.spritesheet_enemy.get_image(112, 19, 16, 13), #0
                             self.game.spritesheet_enemy.get_image(112, 19, 16, 13),
                             self.game.spritesheet_enemy.get_image(112, 19, 16, 13),
@@ -232,6 +225,7 @@ class Enemy(pygame.sprite.Sprite):
         for frame in self.standing_frames:
             frame.set_colorkey(BLACK)
             
+        #Imagens andando para esquerda
         self.walk_frames_l = [self.game.spritesheet_enemy.get_image(112, 35, 14, 13),  #2
                             self.game.spritesheet_enemy.get_image(129, 35, 14, 13),  #3
                             self.game.spritesheet_enemy.get_image(145, 35, 16, 13),  #4
@@ -243,10 +237,11 @@ class Enemy(pygame.sprite.Sprite):
             
         self.walk_frames_r = []
 
+        #Imagens andando para a direita
         for frame in self.walk_frames_l:
             self.walk_frames_r.append(pygame.transform.flip(frame, True, False))
 
-    
+    # Função que mata o inimigo caso o player ganhe no confronto
     def kill(self):
         
         self.vel.y = -10
@@ -256,8 +251,10 @@ class Enemy(pygame.sprite.Sprite):
         self.sumir = True
         self.game.placar += 1
 
+# Classe setas
 class Setas(pygame.sprite.Sprite):
 
+    # Inicia cada seta individualmente
     def __init__(self, game, x, cod):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
@@ -280,9 +277,11 @@ class Setas(pygame.sprite.Sprite):
         self.pos = (self.rect.x, self.rect.y)
         self.cod = cod
 
+    # Função usada para saber sentido da seta
     def retorno(self):
         return self.sentido
 
+    # Carrega as imagens das setas (seta normal, seta acertada e seta errada)
     def load_images(self):
         
         self.seta_cima = self.game.spritesheet_keys.get_image(32,0,32,32)
@@ -300,6 +299,7 @@ class Setas(pygame.sprite.Sprite):
         self.seta_esquerda_acerto = self.game.spritesheet_keys.get_image(0,160,32,32)
         self.seta_direita_acerto = self.game.spritesheet_keys.get_image(64,160,32,32)
 
+    # Define a imagem de acerto
     def img_acerto(self):
 
         if self.sentido == 'cima':
@@ -310,7 +310,8 @@ class Setas(pygame.sprite.Sprite):
             self.image = self.seta_direita_acerto
         else:
             self.image = self.seta_esquerda_acerto
-
+    
+    #Define a imagem de erro
     def img_erro(self):
 
         if self.sentido == 'cima':
@@ -322,6 +323,7 @@ class Setas(pygame.sprite.Sprite):
         else:
             self.image = self.seta_esquerda_erro
 
+    #Define as ações a serem tomadas com o acerto
     def acerto(self):
         self.game.grupo_setas.remove(self)
         self.game.todas_sprites.remove(self)
@@ -332,6 +334,7 @@ class Setas(pygame.sprite.Sprite):
         self.game.setas_apertadas += 1
         self.game.acertos += 1
 
+    #Define as ações a serem tomadas com o erro
     def erro(self):
         self.game.grupo_setas.remove(self)
         self.game.todas_sprites.remove(self)
@@ -341,8 +344,10 @@ class Setas(pygame.sprite.Sprite):
         self.game.pos_seta += 1
         self.game.setas_apertadas += 1
 
+#Classe do coração
 class Coracao(pygame.sprite.Sprite):
 
+    #Inicia os corações. Aquie de novo rodamos uma vez para cada coração
     def __init__(self, game, x, cod):
 
         pygame.sprite.Sprite.__init__(self)
@@ -353,7 +358,8 @@ class Coracao(pygame.sprite.Sprite):
         self.rect.y = 30
         self.rect.x = x
         self.pos = (self.rect.x, self.rect.y)
-  
+
+# Classe dos tiles  
 class Tile(pygame.sprite.Sprite):
     
     def __init__(self, tile_img, row, column):
@@ -373,7 +379,8 @@ class Tile(pygame.sprite.Sprite):
         # Posiciona o tile
         self.rect.x = TILE_SIZE * column
         self.rect.y = TILE_SIZE * row
-        
+
+#Classe para carregar as imagens dos tiles        
 def load_assets(img):
     assets = {}
     assets[CHAO] = pygame.image.load(os.path.join(imagem1, "grassMid.png")).convert()
