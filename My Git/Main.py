@@ -24,11 +24,13 @@ class Game:
         self.setas_apertadas = 0  # Controle de quantas setas foram apertdas
         self.dificuldade = 'facil'  # Dificuldade do jogo
         self.placar = 0  # Pontuação do player
+        self.tempo_spawn_inimigo = 10000   # Defini o tempo de spawn do inimigo
         self.dificuldade_setas = 300  # Quantidade de setas (dividir valor por 100)
         font1 = pygame.font.Font(pygame.font.get_default_font(), 60)
         font2 = pygame.font.Font(pygame.font.get_default_font(), 30)
         self.score = font2.render(' SCORE', True, BLACK)  # Print inicial da pontuação
         self.pontos = font1.render(' 0', True, BLACK)
+        self.movement = True
 
     # Função que carrega as músicas
     def musica(self): 
@@ -116,15 +118,15 @@ class Game:
         if self.placar == 5:
             self.dificuldade = 'medio'
             self.dificuldade_setas = 500
-            TEMPO_SPAWN_INIMIGO = 9000
+            self.tempo_spawn_inimigo = 9000
         elif self.placar == 10:
             self.dificuldade = 'dificil'
             self.dificuldade_setas = 700
-            TEMPO_SPAWN_INIMIGO = 8000
+            self.tempo_spawn_inimigo = 8000
         elif self.placar == 15:
             self.dificuldade = 'gof'
             self.dificuldade_setas = 900
-            TEMPO_SPAWN_INIMIGO = 7000
+            self.tempo_spawn_inimigo = 7000
 
         # Controle entre plataformas e player/inimigo
         if self.player.vel.y > 0:
@@ -142,7 +144,7 @@ class Game:
 
         # Spawna inimigos a cada 10 segundos
         self.now = pygame.time.get_ticks()
-        if self.now - self.start > TEMPO_SPAWN_INIMIGO:
+        if self.now - self.start > self.tempo_spawn_inimigo:
             self.enemy = Enemy(self, random.randint(40,1200), random.randint(100,ALTURA - 60), random.randint(100,200))
             self.todas_sprites.add(self.enemy)
             self.enemys.add(self.enemy)
@@ -161,6 +163,7 @@ class Game:
                 self.cod_seta = 0
                 self.acertos = 0
                 self.enemy_fight = enemy
+                self.movement = False
 
                 # Gera as setas
                 for i in range(30, self.dificuldade_setas, 100):
@@ -174,15 +177,21 @@ class Game:
         if not self.confronto_liberado:
             self.current_time = pygame.time.get_ticks()
             if self.end_time < self.current_time or self.setas_apertadas == self.cod_seta and not self.confronto_liberado:
+
+                #Player ganha o confronto
                 if self.acertos == self.setas_apertadas and self.setas_apertadas != 0:
                     FPS = 60
                     self.enemys.remove(self.enemy_fight)
                     self.enemy_fight.kill()
-                    
                     self.confronto_liberado = True
+                    self.movement = True
+
+                #Player perde o confronto
                 else:
                     self.vidas -= 1
                     FPS = 60
+                    self.player.damage(self.enemy_fight)
+                    self.movement = True
                     for coracao in self.grupo_coracoes:
                         if coracao.cod == self.vidas:
                             self.grupo_coracoes.remove(coracao)
@@ -345,6 +354,13 @@ class Game:
         self.dif_y = math.fabs(obj1.pos.y) - math.fabs(obj2.pos.y)
         self.pit = math.sqrt(self.dif_x**2 + self.dif_y**2)
         return self.pit
+
+    def dist_x(self, obj1, obj2):
+        self.dif_x = obj1.pos.x - obj2.pos.x
+        if self.dif_x > 0:
+            return True
+        else:
+            return False
 
 g = Game()
 g.show_start_screen()

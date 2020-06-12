@@ -54,15 +54,21 @@ class Player(pygame.sprite.Sprite):
         if hits:
             self.vel.y = -PLAYER_JUMP
 
+    def damage(self, enemy):
+        if self.game.dist_x(self.game.player, enemy):
+            self.vel.x = PLAYER_DAMAGE
+        else:
+            self.vel.x = - PLAYER_DAMAGE
+
     #Função de update do player, responsável por alterar sua velocidade
     def update(self):
         self.animate()
         self.acc = vec(0, GRAVIDADE)
         keys = pygame.key.get_pressed()
         
-        if keys[pygame.K_a]:
+        if keys[pygame.K_a] and self.game.movement:
             self.acc.x = -PLAYER_ACC
-        if keys[pygame.K_d]:
+        if keys[pygame.K_d]and self.game.movement:
             self.acc.x = PLAYER_ACC
 
         #Movimentação do player

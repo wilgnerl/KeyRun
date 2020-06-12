@@ -6,7 +6,6 @@ ALTURA = 700
 #Definições de jogo
 TILE_SIZE = 70
 FPS = 60
-TEMPO_SPAWN_INIMIGO = 10000
 
 #Definições de arquivos
 SPRITESHEET_ENEMY = 'Enemy.png'
@@ -18,7 +17,8 @@ SPRITESHEET_HERO = 'hero_sprites.png'
 PLAYER_ACC = 0.5
 PLAYER_FRICTION = -0.12
 GRAVIDADE = 0.8
-PLAYER_JUMP = 20
+PLAYER_JUMP = 19
+PLAYER_DAMAGE = 30
 
 #Mapa de Tiles
 CHAO = 1
