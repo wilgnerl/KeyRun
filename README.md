@@ -3,9 +3,9 @@ Repositório para o trabalho final da disciplina de Design de Software
 
 # Atualizando
 - Membros:
-    Wilgner Lopes Araujo
-    Rodrigo Guimarães Coelho
-    Fabricio Neri Lima
+    - Wilgner Lopes Araujo
+    - Rodrigo Guimarães Coelho
+    - Fabricio Neri Lima
 
 # Referências para o desenvolvimento do projeto
 
