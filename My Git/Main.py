@@ -214,6 +214,7 @@ class Game:
                     FPS = 60
                     self.player.damage(self.enemy_fight)
                     self.movement = True
+                    self.efeitos_velocidade('rapido.ogg')
                     for coracao in self.grupo_coracoes:
                         if coracao.cod == self.vidas:
                             self.grupo_coracoes.remove(coracao)
