@@ -1,5 +1,5 @@
 #Definições de tela
-TITULO = 'Pygame'
+TITULO = 'KeyRun'
 LARGURA = 1400
 ALTURA = 700
 

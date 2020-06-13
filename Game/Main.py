@@ -116,10 +116,10 @@ class Game:
         self.todas_sprites.add(self.player) 
 
         # Primeiro inimigo a ser gerado
-        self.e = Enemy(self, 900, ALTURA - 40, 200)
+        '''self.e = Enemy(self, 900, ALTURA - 40, 200)
         self.todas_sprites.add(self.e)
         self.enemys.add(self.e)
-        self.cod_enemy += 1
+        self.cod_enemy += 1'''
         
         self.run()
      
