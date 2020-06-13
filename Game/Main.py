@@ -56,6 +56,14 @@ class Game:
 
         musica_efeito = os.path.join("Snd", som_velocidade)
         pygame.mixer.Channel(2).play(pygame.mixer.Sound(musica_efeito))
+
+    def efeitos_morte(self, som_morte):
+        '''
+        Função que carrega as músicas de lento e rápido (canal 3)
+        '''
+
+        musica_efeito = os.path.join("Snd", som_morte)
+        pygame.mixer.Channel(3).play(pygame.mixer.Sound(musica_efeito))
     
     # Função que carrega arquivos e suas localizações
     def load_data(self):
@@ -200,6 +208,7 @@ class Game:
 
                 #Player ganha o confronto
                 if self.acertos == self.setas_apertadas and self.setas_apertadas != 0:
+                    self.efeitos_morte('Death_Enemy.ogg')
                     self.efeitos_velocidade('rapido.ogg')
                     FPS = 60
                     self.enemys.remove(self.enemy_fight)
@@ -209,6 +218,7 @@ class Game:
 
                 #Player perde o confronto
                 else:
+                    self.efeitos_morte('PlayerDamage.ogg')
                     self.vidas -= 1
                     FPS = 60
                     self.player.damage(self.enemy_fight)
