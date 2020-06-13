@@ -37,7 +37,7 @@ class Game:
         '''
         Função que carrega a música de fundo (canal 0), que se repete sempre
         ''' 
-        musica = os.path.join("sons", "Common Fight.ogg")
+        musica = os.path.join("Snd", "Common Fight.ogg")
         pygame.mixer.music.load(musica)
         pygame.mixer.music.set_volume(0.1)
         pygame.mixer.music.play(-1)
@@ -46,7 +46,7 @@ class Game:
         '''
         Função que carrega as músicas de pulo e erro (canal 1)
         '''
-        musica_efeito = os.path.join("sons", efeito_sonoro)
+        musica_efeito = os.path.join("Snd", efeito_sonoro)
         pygame.mixer.Channel(1).play(pygame.mixer.Sound(musica_efeito))
     
     def efeitos_velocidade(self, som_velocidade):
@@ -54,14 +54,14 @@ class Game:
         Função que carrega as músicas de lento e rápido (canal 2)
         '''
 
-        musica_efeito = os.path.join("sons", som_velocidade)
+        musica_efeito = os.path.join("Snd", som_velocidade)
         pygame.mixer.Channel(2).play(pygame.mixer.Sound(musica_efeito))
     
 
     # Função que carrega arquivos e suas localizações
     def load_data(self):
         self.dir = os.path.dirname(__file__)
-        img_dir = os.path.join(self.dir, 'Tiles')
+        img_dir = os.path.join(self.dir, 'Img')
         self.spritesheet_enemy = Spritesheet(os.path.join(img_dir, SPRITESHEET_ENEMY), 3)
         self.spritesheet_keys = Spritesheet(os.path.join(img_dir, SPRITESHEE_KEYS), 3)
         self.image_heart = pygame.image.load(os.path.join(img_dir, HEART_PNG)).convert_alpha()

@@ -5,7 +5,7 @@ vec = pygame.math.Vector2
 
 #Configurando pasta e Assets(Figura que vai ser o player)
 pasta = os.path.dirname(__file__)
-imagem1 = os.path.join(pasta, "Tiles")
+imagem1 = os.path.join(pasta, "Img")
 
 class Player(pygame.sprite.Sprite):
     
