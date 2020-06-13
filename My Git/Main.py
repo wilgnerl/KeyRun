@@ -33,10 +33,30 @@ class Game:
         self.movement = True
 
     # Função que carrega as músicas
-    def musica(self): 
+    def musica(self):
+        '''
+        Função que carrega a música de fundo (canal 0), que se repete sempre
+        ''' 
         musica = os.path.join("sons", "Common Fight.ogg")
         pygame.mixer.music.load(musica)
+        pygame.mixer.music.set_volume(0.1)
         pygame.mixer.music.play(-1)
+    
+    def efeitos_sonoros(self, efeito_sonoro):
+        '''
+        Função que carrega as músicas de pulo e erro (canal 1)
+        '''
+        musica_efeito = os.path.join("sons", efeito_sonoro)
+        pygame.mixer.Channel(1).play(pygame.mixer.Sound(musica_efeito))
+    
+    def efeitos_velocidade(self, som_velocidade):
+        '''
+        Função que carrega as músicas de lento e rápido (canal 2)
+        '''
+
+        musica_efeito = os.path.join("sons", som_velocidade)
+        pygame.mixer.Channel(2).play(pygame.mixer.Sound(musica_efeito))
+    
 
     # Função que carrega arquivos e suas localizações
     def load_data(self):
@@ -155,6 +175,7 @@ class Game:
         for enemy in self.enemys:
             if self.distancia(self.player, enemy) < 150 and self.confronto_liberado:
                 FPS = 20
+                self.efeitos_velocidade("lento.ogg")
                 self.confronto_liberado = False
                 self.end_time = pygame.time.get_ticks() + 3000
                 self.lista_setas_tela = []
@@ -180,6 +201,7 @@ class Game:
 
                 #Player ganha o confronto
                 if self.acertos == self.setas_apertadas and self.setas_apertadas != 0:
+                    self.efeitos_velocidade('rapido.ogg')
                     FPS = 60
                     self.enemys.remove(self.enemy_fight)
                     self.enemy_fight.kill()
@@ -233,7 +255,7 @@ class Game:
             if evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_SPACE:
                     self.player.jump()
-                    self.player.jumping
+                    self.efeitos_sonoros("Jump.ogg")
                 
                 if (evento.key == pygame.K_ESCAPE):
                     if self.playing:

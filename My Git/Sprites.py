@@ -349,6 +349,7 @@ class Setas(pygame.sprite.Sprite):
         self.game.grupo_setas_errado.add(self)
         self.game.pos_seta += 1
         self.game.setas_apertadas += 1
+        self.game.efeitos_sonoros("Kill.ogg")
 
 #Classe do coração
 class Coracao(pygame.sprite.Sprite):
