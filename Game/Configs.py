@@ -43,7 +43,7 @@ MAP = [
 ]
 
 #Tela
-TITLE = 'Bem vindo'
+TITLE = 'Bem vindo ao KeyRun'
 FONT_NAME = 'Courier'
 
 #Cores para serem utilizadas

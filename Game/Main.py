@@ -57,7 +57,6 @@ class Game:
         musica_efeito = os.path.join("Snd", som_velocidade)
         pygame.mixer.Channel(2).play(pygame.mixer.Sound(musica_efeito))
     
-
     # Função que carrega arquivos e suas localizações
     def load_data(self):
         self.dir = os.path.dirname(__file__)
@@ -333,8 +332,7 @@ class Game:
         self.draw_text('Sua pontuação: {}'.format(self.placar*200), 30, WHITE, LARGURA/4, 600)
         pygame.display.flip()
         self.wait_for_key()
-       
-        
+          
     def wait_for_key(self):
         waiting = True
         while waiting:
