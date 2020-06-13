@@ -116,10 +116,10 @@ class Game:
         self.todas_sprites.add(self.player) 
 
         # Primeiro inimigo a ser gerado
-        '''self.e = Enemy(self, 900, ALTURA - 40, 200)
+        self.e = Enemy(self, 900, ALTURA - 40, 200)
         self.todas_sprites.add(self.e)
         self.enemys.add(self.e)
-        self.cod_enemy += 1'''
+        self.cod_enemy += 1
         
         self.run()
      
@@ -142,18 +142,22 @@ class Game:
         self.todas_sprites.update()
 
         # Define a dificuldade do jogo de acordo com a pontuação do jogador
-        if self.placar == 5:
+        if self.placar == 0:
+            self.dificuldade = 'facil'
+            self.dificuldade_setas = 300
+            self.tempo_spawn_inimigo = 9000
+        elif self.placar == 5:
             self.dificuldade = 'medio'
             self.dificuldade_setas = 500
-            self.tempo_spawn_inimigo = 9000
+            self.tempo_spawn_inimigo = 8000
         elif self.placar == 10:
             self.dificuldade = 'dificil'
             self.dificuldade_setas = 700
-            self.tempo_spawn_inimigo = 8000
+            self.tempo_spawn_inimigo = 7000
         elif self.placar == 15:
             self.dificuldade = 'gof'
             self.dificuldade_setas = 900
-            self.tempo_spawn_inimigo = 7000
+            self.tempo_spawn_inimigo = 6000
 
         # Controle entre plataformas e player/inimigo
         if self.player.vel.y > 0:
