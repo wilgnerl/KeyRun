@@ -1,5 +1,6 @@
 import pygame, os, random
 from Configs import *
+from Musica import *
 
 vec = pygame.math.Vector2
 
@@ -349,7 +350,10 @@ class Setas(pygame.sprite.Sprite):
         self.game.grupo_setas_errado.add(self)
         self.game.pos_seta += 1
         self.game.setas_apertadas += 1
-        self.game.efeitos_sonoros("Kill.ogg", 4)
+        
+        efeito_morte = Musica('kill.ogg', 4)
+        efeito_morte.efeitos_sonoros()
+        #self.game.efeitos_sonoros("Kill.ogg", 4)
 
 #Classe do coração
 class Coracao(pygame.sprite.Sprite):

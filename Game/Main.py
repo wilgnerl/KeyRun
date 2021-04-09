@@ -1,6 +1,7 @@
 import pygame, random, math
 from Configs import *
 from Sprites import *
+from Musica  import *
 
 # Classe principal do jogo
 
@@ -33,15 +34,6 @@ class Game:
         self.movement = True
 
     # Função que carrega as músicas
-    def musica(self, efeito_sonoro):
-        '''
-        Função que carrega a música de fundo (canal 0), que se repete sempre
-        ''' 
-        musica = os.path.join("Snd", efeito_sonoro)
-        pygame.mixer.music.load(musica)
-        pygame.mixer.music.set_volume(0.1)
-        pygame.mixer.music.play(-1)
-    
     def efeitos_sonoros(self, efeito_sonoro, canal):
         '''
         Função que carrega as músicas de pulo e erro (canal 1)
@@ -170,7 +162,9 @@ class Game:
         for enemy in self.enemys:
             if self.distancia(self.player, enemy) < 150 and self.confronto_liberado:
                 FPS = 20
-                self.efeitos_sonoros("lento.ogg", 2)
+                som_lento = Musica("lento.ogg", 2)
+                som_lento.efeitos_sonoros()
+                #self.efeitos_sonoros("lento.ogg", 2)
                 self.confronto_liberado = False
                 self.end_time = pygame.time.get_ticks() + 3000
                 self.lista_setas_tela = []
@@ -196,8 +190,12 @@ class Game:
 
                 #Player ganha o confronto
                 if self.acertos == self.setas_apertadas and self.setas_apertadas != 0:
-                    self.efeitos_sonoros('Death_Enemy.ogg', 3)
-                    self.efeitos_sonoros('rapido.ogg', 2)
+                    efeito_morte = Musica('Death_Enemy.ogg', 3) 
+                    efeito_morte.efeitos_sonoros()                   
+                   
+                    efeito_rapido = Musica('rapido.ogg', 2)
+                    efeito_rapido.efeitos_sonoros()
+                    
                     FPS = 60
                     self.enemys.remove(self.enemy_fight)
                     self.enemy_fight.kill()
@@ -206,12 +204,15 @@ class Game:
 
                 #Player perde o confronto
                 else:
-                    self.efeitos_sonoros('PlayerDamage.ogg', 3)
+                    efeito_dano = Musica('PlayerDamage.ogg', 3)
+                    efeito_dano.efeitos_sonoros()
+
                     self.vidas -= 1
                     FPS = 60
                     self.player.damage(self.enemy_fight)
                     self.movement = True
-                    self.efeitos_sonoros('rapido.ogg', 2)
+                    efeito_rapido = Musica('rapido.ogg', 2)
+                    efeito_rapido.efeitos_sonoros()
                     for coracao in self.grupo_coracoes:
                         if coracao.cod == self.vidas:
                             self.grupo_coracoes.remove(coracao)
@@ -253,7 +254,9 @@ class Game:
             if evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_SPACE:
                     self.player.jump()
-                    self.efeitos_sonoros("Jump.ogg", 1)
+
+                    efeito_pulo = Musica('Jump.ogg', 1)
+                    efeito_pulo.efeitos_sonoros()
                 
                 if (evento.key == pygame.K_ESCAPE):
                     if self.playing:
@@ -344,7 +347,9 @@ class Game:
                 if (evento.type == pygame.KEYDOWN) and (evento.key == pygame.K_RETURN):
                     waiting = False
                     self.running = True
-                    self.musica("Common Fight.ogg")                  
+                    musica_fundo = Musica("Common Fight.ogg", 0)
+                    musica_fundo.musica_de_fundo()
+                    #self.musica("Common Fight.ogg")                  
                     
                 if (evento.type == pygame.KEYDOWN) and (evento.key == pygame.K_ESCAPE):
                     waiting = False
@@ -354,7 +359,9 @@ class Game:
                     print('Apertei X')
                     waiting = False
                     self.running = True
-                    self.musica("Common Fight.ogg")
+                    musica_fundo = Musica("Common Fight.ogg", 0)
+                    musica_fundo.musica_de_fundo()
+                    #self.musica("Common Fight.ogg")
                     self.vidas = 3
                     self.placar = 0
                     self.dificuldade = 'facil' 
