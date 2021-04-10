@@ -37,34 +37,44 @@ class Game:
         '''
         Função que carrega a música de fundo (canal 0), que se repete sempre
         ''' 
-        musica = os.path.join("Snd", "Common Fight.ogg")
-        pygame.mixer.music.load(musica)
-        pygame.mixer.music.set_volume(0.1)
-        pygame.mixer.music.play(-1)
-    
+        try:
+            musica = os.path.join("Snd", "Common Fight.ogg")
+            pygame.mixer.music.load(musica)
+            pygame.mixer.music.set_volume(0.1)
+            pygame.mixer.music.play(-1)
+        except:
+            None
+
     def efeitos_sonoros(self, efeito_sonoro):
         '''
         Função que carrega as músicas de pulo e erro (canal 1)
         '''
-        musica_efeito = os.path.join("Snd", efeito_sonoro)
-        pygame.mixer.Channel(1).play(pygame.mixer.Sound(musica_efeito))
-    
+        try:
+            musica_efeito = os.path.join("Snd", efeito_sonoro)
+            pygame.mixer.Channel(1).play(pygame.mixer.Sound(musica_efeito))
+        except:
+            None
+
     def efeitos_velocidade(self, som_velocidade):
         '''
         Função que carrega as músicas de lento e rápido (canal 2)
         '''
-
-        musica_efeito = os.path.join("Snd", som_velocidade)
-        pygame.mixer.Channel(2).play(pygame.mixer.Sound(musica_efeito))
+        try:
+            musica_efeito = os.path.join("Snd", som_velocidade)
+            pygame.mixer.Channel(2).play(pygame.mixer.Sound(musica_efeito))
+        except:
+            None
 
     def efeitos_morte(self, som_morte):
         '''
         Função que carrega as músicas de lento e rápido (canal 3)
         '''
+        try:
+            musica_efeito = os.path.join("Snd", som_morte)
+            pygame.mixer.Channel(3).play(pygame.mixer.Sound(musica_efeito))
+        except:
+            None
 
-        musica_efeito = os.path.join("Snd", som_morte)
-        pygame.mixer.Channel(3).play(pygame.mixer.Sound(musica_efeito))
-    
     # Função que carrega arquivos e suas localizações
     def load_data(self):
         self.dir = os.path.dirname(__file__)
@@ -133,6 +143,18 @@ class Game:
             self.update()
             self.draw()
     
+    def calcula_dificuldade(self):
+        self.multiplicador = self.placar // 5
+        self.dic_dificuldades = {0:"facil", 1:"medio", 2:"dificil", 3:"gof"}
+
+        if self.multiplicador <= 3:
+            self.dificuldade = self.dic_dificuldades[self.multiplicador]
+        else:
+            self.dificuldade = self.dic_dificuldades[3]
+
+        self.dificuldade_setas = 300 + 200*self.multiplicador
+        self.tempo_spawn_inimigo = 9000 - 1000*self.multiplicador
+
     # Função de atualização do jogo
     def update(self):
 
@@ -142,22 +164,7 @@ class Game:
         self.todas_sprites.update()
 
         # Define a dificuldade do jogo de acordo com a pontuação do jogador
-        if self.placar == 0:
-            self.dificuldade = 'facil'
-            self.dificuldade_setas = 300
-            self.tempo_spawn_inimigo = 9000
-        elif self.placar == 5:
-            self.dificuldade = 'medio'
-            self.dificuldade_setas = 500
-            self.tempo_spawn_inimigo = 8000
-        elif self.placar == 10:
-            self.dificuldade = 'dificil'
-            self.dificuldade_setas = 700
-            self.tempo_spawn_inimigo = 7000
-        elif self.placar == 15:
-            self.dificuldade = 'gof'
-            self.dificuldade_setas = 900
-            self.tempo_spawn_inimigo = 6000
+        self.calcula_dificuldade()
 
         # Controle entre plataformas e player/inimigo
         if self.player.vel.y > 0:
@@ -255,7 +262,37 @@ class Game:
         font2 = pygame.font.Font(pygame.font.get_default_font(), 30)
         self.score = font2.render(' SCORE', True, BLACK)
         self.pontos = font1.render(' {}'.format(self.placar*200), True, BLACK)
-        
+
+    # Função de controle do pulo do player
+    def pulo_player(self, key):
+        if key == pygame.K_SPACE:
+            self.player.jump()
+            self.efeitos_sonoros("Jump.ogg")
+
+    # Função que mapeia as keys de devolve o movimento correto
+    def eventos_setas(self, key):
+        self.dic_keys = {pygame.K_UP:"cima",
+                         pygame.K_DOWN:"baixo",
+                         pygame.K_RIGHT:"direita",
+                         pygame.K_LEFT:"esquerda"}
+
+        if key in self.dic_keys.keys():
+            for seta in self.grupo_setas:
+                if seta.cod == self.pos_seta:
+                    if seta.sentido == self.dic_keys[key]:
+                        seta.acerto()
+                        break
+                    else:
+                        seta.erro()
+                        break
+
+    # Função de quit         
+    def quitar(self, key):
+        if key == pygame.K_ESCAPE:
+            if self.playing:
+                self.playing = False
+                self.running = False
+
     def events(self):
 
         #Eventos do loop
@@ -265,57 +302,17 @@ class Game:
                     self.playing = False
                     self.running = False
 
-            # Pulo do player
+            
             if evento.type == pygame.KEYDOWN:
-                if evento.key == pygame.K_SPACE:
-                    self.player.jump()
-                    self.efeitos_sonoros("Jump.ogg")
-                
-                if (evento.key == pygame.K_ESCAPE):
-                    if self.playing:
-                        self.playing = False
-                        self.running = False
 
-                # Verifica o evento de resposta das setas quando entra em confronto com o inimigo
-                if evento.key == pygame.K_UP:
-                    for seta in self.grupo_setas:
-                        if seta.cod == self.pos_seta:
-                            if seta.sentido == 'cima':
-                                seta.acerto()
-                                break
-                            else:
-                                seta.erro()
-                                break
+                # Pulo do player
+                self.pulo_player(evento.key)
 
-                if evento.key == pygame.K_DOWN:
-                    for seta in self.grupo_setas:
-                        if seta.cod == self.pos_seta:
-                            if seta.sentido == 'baixo':
-                                seta.acerto()
-                                break
-                            else:
-                                seta.erro()
-                                break
+                # Controle das setas
+                self.eventos_setas(evento.key)
 
-                if evento.key == pygame.K_RIGHT:
-                    for seta in self.grupo_setas:
-                        if seta.cod == self.pos_seta:
-                            if seta.sentido == 'direita':
-                                seta.acerto()
-                                break
-                            else:
-                                seta.erro()
-                                break
-
-                if evento.key == pygame.K_LEFT:
-                    for seta in self.grupo_setas:
-                        if seta.cod == self.pos_seta:
-                            if seta.sentido == 'esquerda':
-                                seta.acerto()
-                                break
-                            else:
-                                seta.erro()
-                                break
+                # Quit
+                self.quitar(evento.key)
 
     # Desenha as imagens
     def draw(self):
