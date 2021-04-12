@@ -1,5 +1,6 @@
 import pygame, os, random
 from Configs import *
+from Musica import *
 
 vec = pygame.math.Vector2
 
@@ -130,24 +131,14 @@ class Spritesheet():
         return image       
 
 #Classe do inimigo        
-class Enemy(pygame.sprite.Sprite):
+class Enemy(Player):
     
     #Inicia as configs básicas do inimigo
     def __init__(self, game, x, y, distance):
-        pygame.sprite.Sprite.__init__(self)
-        self.game = game
-        self.walking = False
-        self.current_frame = 0
-        self.last_update = 0
-        self.load_images()
-        self.image = self.walk_frames_r[0]
-        self.image.set_colorkey(BLACK)
-        self.rect = self.image.get_rect()
+        super().__init__(game)
         self.rect.x = x
         self.rect.y = y
         self.pos = vec(x, y)
-        self.vel = vec(0,0)
-        self.acc = vec(0,0)
         self.end = x + distance
         self.start = x
         self.animar = True
@@ -192,6 +183,8 @@ class Enemy(pygame.sprite.Sprite):
             if self.end_time + 1500 < self.current_time and self.sumir:
                 self.game.todas_sprites.remove(self)
                 self.game.confronto_liberado = True
+
+    
         
     #Anima o inimigo
     def animate(self):
@@ -246,6 +239,7 @@ class Enemy(pygame.sprite.Sprite):
         #Imagens andando para a direita
         for frame in self.walk_frames_l:
             self.walk_frames_r.append(pygame.transform.flip(frame, True, False))
+
 
     # Função que mata o inimigo caso o player ganhe no confronto
     def kill(self):
@@ -349,7 +343,10 @@ class Setas(pygame.sprite.Sprite):
         self.game.grupo_setas_errado.add(self)
         self.game.pos_seta += 1
         self.game.setas_apertadas += 1
-        self.game.efeitos_sonoros("Kill.ogg")
+        
+        efeito_morte = Musica('kill.ogg', 4)
+        efeito_morte.efeitos_sonoros()
+        #self.game.efeitos_sonoros("Kill.ogg", 4)
 
 #Classe do coração
 class Coracao(pygame.sprite.Sprite):
