@@ -1,6 +1,7 @@
 import pygame, random, math
 from Configs import *
 from Sprites import *
+from Sound import *
 
 # Classe principal do jogo
 
@@ -31,49 +32,7 @@ class Game:
         self.score = font2.render(' SCORE', True, BLACK)  # Print inicial da pontuação
         self.pontos = font1.render(' 0', True, BLACK)
         self.movement = True
-
-    # Função que carrega as músicas
-    def musica(self):
-        '''
-        Função que carrega a música de fundo (canal 0), que se repete sempre
-        ''' 
-        try:
-            musica = os.path.join("Snd", "Common Fight.ogg")
-            pygame.mixer.music.load(musica)
-            pygame.mixer.music.set_volume(0.1)
-            pygame.mixer.music.play(-1)
-        except:
-            None
-
-    def efeitos_sonoros(self, efeito_sonoro):
-        '''
-        Função que carrega as músicas de pulo e erro (canal 1)
-        '''
-        try:
-            musica_efeito = os.path.join("Snd", efeito_sonoro)
-            pygame.mixer.Channel(1).play(pygame.mixer.Sound(musica_efeito))
-        except:
-            None
-
-    def efeitos_velocidade(self, som_velocidade):
-        '''
-        Função que carrega as músicas de lento e rápido (canal 2)
-        '''
-        try:
-            musica_efeito = os.path.join("Snd", som_velocidade)
-            pygame.mixer.Channel(2).play(pygame.mixer.Sound(musica_efeito))
-        except:
-            None
-
-    def efeitos_morte(self, som_morte):
-        '''
-        Função que carrega as músicas de lento e rápido (canal 3)
-        '''
-        try:
-            musica_efeito = os.path.join("Snd", som_morte)
-            pygame.mixer.Channel(3).play(pygame.mixer.Sound(musica_efeito))
-        except:
-            None
+        self.sound = Sound()
 
     # Função que carrega arquivos e suas localizações
     def load_data(self):
@@ -193,7 +152,7 @@ class Game:
         for enemy in self.enemys:
             if self.distancia(self.player, enemy) < 150 and self.confronto_liberado:
                 FPS = 20
-                self.efeitos_velocidade("lento.ogg")
+                self.sound.efeitosSonoros("Lento")
                 self.confronto_liberado = False
                 self.end_time = pygame.time.get_ticks() + 3000
                 self.lista_setas_tela = []
@@ -219,8 +178,8 @@ class Game:
 
                 #Player ganha o confronto
                 if self.acertos == self.setas_apertadas and self.setas_apertadas != 0:
-                    self.efeitos_morte('Death_Enemy.ogg')
-                    self.efeitos_velocidade('rapido.ogg')
+                    self.sound.efeitosSonoros("MorteInimigo")
+                    self.sound.efeitosSonoros("Rapido")
                     FPS = 60
                     self.enemys.remove(self.enemy_fight)
                     self.enemy_fight.kill()
@@ -229,12 +188,12 @@ class Game:
 
                 #Player perde o confronto
                 else:
-                    self.efeitos_morte('PlayerDamage.ogg')
+                    self.sound.efeitosSonoros("DanoPlayer")
                     self.vidas -= 1
                     FPS = 60
                     self.player.damage(self.enemy_fight)
                     self.movement = True
-                    self.efeitos_velocidade('rapido.ogg')
+                    self.sound.efeitosSonoros("Rapido")
                     for coracao in self.grupo_coracoes:
                         if coracao.cod == self.vidas:
                             self.grupo_coracoes.remove(coracao)
@@ -267,7 +226,7 @@ class Game:
     def pulo_player(self, key):
         if key == pygame.K_SPACE:
             self.player.jump()
-            self.efeitos_sonoros("Jump.ogg")
+            self.sound.efeitosSonoros("Pulo")
 
     # Função que mapeia as keys de devolve o movimento correto
     def eventos_setas(self, key):
@@ -357,7 +316,7 @@ class Game:
                 if (evento.type == pygame.KEYDOWN) and (evento.key == pygame.K_RETURN):
                     waiting = False
                     self.running = True
-                    self.musica()                  
+                    self.sound.playMusica()                  
                     
                 if (evento.type == pygame.KEYDOWN) and (evento.key == pygame.K_ESCAPE):
                     waiting = False
